@@ -14,14 +14,15 @@ namespace ChattingServer
     {
         public ConcurrentDictionary<string, ConnectedClient> _connectedClients = new ConcurrentDictionary<string, ConnectedClient>();
 
-        public int Login(string userName)
+        public string Login(string userName)
         {
             Console.Write("user login: " + userName);
+            string userList = "";
             foreach (var client in _connectedClients)
             {
-                if (client.Key.ToLower() == userName.ToLower())
+                if (client.Key.ToLower() != userName.ToLower())
                 {
-                    return 1;
+                    userList += client.Key + " ";
                 }
             }
 
@@ -30,16 +31,43 @@ namespace ChattingServer
             newClient.connection = establishedUserConnection;
             newClient.UserName = userName;
 
+            userList += userName;
+            foreach (var client in _connectedClients)
+            {
+                client.Value.connection.GetPeerList(userList);
+            }
+
             _connectedClients.TryAdd(userName, newClient);
-            return 0;
+
+            return userList;
         }
+
+
+        public void UpdatePeerList()
+        {
+            //Dictionary<string, string> list = new Dictionary<string, string>();
+            //foreach (var client in _connectedClients)
+            //{
+            //    list.Add(client.Key, "welcome");
+            //    Console.WriteLine("client.key" + client.Key);
+            //}
+            foreach (var client in _connectedClients)
+            {
+                client.Value.connection.GetPeerList("one hardCoded string");
+
+            }
+        }
+
 
         public void SendMessageToAll(string message, string userName)
         {
+            Console.WriteLine("Entering SendMessageToAll...");
             foreach (var client in _connectedClients) 
             {
+                Console.WriteLine("Fetched client: " + client.Key);
                 if (client.Key.ToLower() != userName.ToLower())
                 {
+                    Console.WriteLine("Sending message to " + client.Key);
                     client.Value.connection.GetMessage(message, userName);
                 }
             }

@@ -11,9 +11,12 @@ namespace ChattingInterfaces
     public interface IChattingService
     {
         [OperationContract]
-        int Login(string userName);
+        string Login(string userName);
 
         [OperationContract]
         void SendMessageToAll(string message, string userName);
+
+        [OperationContract]
+        void UpdatePeerList();
     }
 }

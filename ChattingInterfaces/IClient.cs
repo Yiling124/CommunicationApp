@@ -12,6 +12,8 @@ namespace ChattingInterfaces
         [OperationContract]
         void GetMessage(string message, string userName);
 
-        
+        [OperationContract]
+        void GetPeerList(string peerList);
+  
     }
 }

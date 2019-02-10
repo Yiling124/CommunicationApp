@@ -20,8 +20,28 @@
         </TextBox>
         <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" Margin="647,354,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="Button_Click_1"/>
         <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="34,354,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="583"/>
-        <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="130" Margin="34,154,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="640"/>
-        <Label Name="WelcomeLabel" Content="welcome" HorizontalAlignment="Left" Margin=" 587,33,0,0" VerticalAlignment="Top" Width="179"/>
+        <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="199" Margin="34,124,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="465" RenderTransformOrigin="0.5,0.5">
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="-0.122"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="-0.498"/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
+        <Label Name="WelcomeLabel" Content="welcome" HorizontalAlignment="Left" Margin="587,35,0,0" VerticalAlignment="Top" Width="179"/>
+        <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Left" Height="177" Margin="540,162,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="228" RenderTransformOrigin="0.5,0.5">
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleY="-0.122"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="-0.498"/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
+        <Label x:Name="Connected_Client_Label" Content="Connected Users:" HorizontalAlignment="Left" Margin="599,137,0,0" VerticalAlignment="Top" Width="167"/>
 
     </Grid>
 </Window>
