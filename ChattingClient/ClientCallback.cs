@@ -6,6 +6,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using ChattingInterfaces;
 using System.Windows;
+using System.Collections.Concurrent;
 
 
 namespace ChattingClient
@@ -18,15 +19,9 @@ namespace ChattingClient
             ((MainWindow)Application.Current.MainWindow).TakeMessage(message, userName);
         }
 
-        //public void GetPeerList(Dictionary<string, string> peerList)
-        //{
-        //    Console.WriteLine("getPeerList get called");
-        //    ((MainWindow)Application.Current.MainWindow).DisplayOnlinePeerList(peerList);
-        //}
-
-        public void GetPeerList(string peerList)
+        public void GetPeerList(string clientList)
         {
-            ((MainWindow)Application.Current.MainWindow).DisplayOnlinePeerList(peerList);
+            ((MainWindow)Application.Current.MainWindow).DisplayOnlinePeerList(clientList);
         }
     }
 }

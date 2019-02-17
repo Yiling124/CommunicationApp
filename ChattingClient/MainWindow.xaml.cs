@@ -42,68 +42,58 @@ namespace ChattingClient
         }
 
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CreateSessionButton_Click(object sender, RoutedEventArgs e)
         {
-            //int returnValue = Server.Login(userNameTextBox.Text);
-            //if (returnValue == 1)
-            //{
-            //    MessageBox.Show("You are already logged in");
-            //}
-            //else if (returnValue == 0)
-            //{
-            //    WelcomeLabel.Content = "Welcome " + userNameTextBox.Text + "!";
-            //    TextDisplayTextBox.IsEnabled = false;
-            //    MessageBox.Show("You logged in!");
+            string ClientListForDisplay = Server.CreateSession(userNameTextBox.Text);
 
-
-            //    userNameTextBox.IsEnabled = false;
-            //    LoginButton.IsEnabled = false;
-            //}
-            string userList = Server.Login(userNameTextBox.Text);
-            WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
-            TextDisplayTextBox.IsEnabled = false;
-            MessageBox.Show("you logged in " + userList);
-
-            userNameTextBox.IsEnabled = false;
-            LoginButton.IsEnabled = false;
-
-            DisplayOnlinePeerList(userList);
+            if (ClientListForDisplay != null)
+            {
+                WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
+                TextDisplayTextBox.IsEnabled = false;
+                DisplayOnlinePeerList(ClientListForDisplay);
+                MessageBox.Show("Your New Session Created " + userNameTextBox.Text);
+                userNameTextBox.IsEnabled = false;
+                CreateSessionButton.IsEnabled = false;
+            } else{
+                MessageBox.Show("You already have a session created!");
+            }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageTextBox.Text.Length == 0)
             {
                 return;
             }
-            Server.SendMessageToAll(MessageTextBox.Text, userNameTextBox.Text);
+            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
+            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
+
+            Server.SendMessageToAll(MessageTextBox.Text, userNameTextBox.Text, sessionOwnerIpAddress);
             TakeMessage(MessageTextBox.Text, "you");
             MessageTextBox.Text = "";
-
-            //Server.UpdatePeerList();
         }
 
-        //public void DisplayOnlinePeerList(Dictionary<string, string> peerList)
-        //{ 
-        //    Console.WriteLine("DisplayOnlinePeerList got called");
-        //    foreach (var peer in peerList)
-        //    {
-        //        TextDisplayTextBox_OnlinePeers.Text += peer.Key + " " + peer.Value + "\n";
-        //    }
-        //    TextDisplayTextBox_OnlinePeers.ScrollToEnd();
-        //}
-
-        public void DisplayOnlinePeerList(string peerList)
+        public void DisplayOnlinePeerList(string userList)
         {
-            Console.WriteLine("DisplayOnlinePeerList got called");
-            TextDisplayTextBox_OnlinePeers.Text = "peerList: " + peerList + "\n";
+            TextDisplayTextBox_OnlinePeers.Text = "";
+            TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.ScrollToEnd();
-            // TextDisplayTextBox_OnlinePeers.Text += peerList + "\n";
-            //foreach (var peer in peerList)
-            //{
-            //    TextDisplayTextBox_OnlinePeers.Text += peer.Key + " " + peer.Value + "\n";
-            //}
-            //TextDisplayTextBox_OnlinePeers.ScrollToEnd();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //Server.Logout();
+        }
+
+        private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
+        {
+            WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
+            userNameTextBox.IsEnabled = false;
+
+            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
+            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
+            string userList = Server.JoinSession(userNameTextBox.Text, sessionOwnerIpAddress);
+            DisplayOnlinePeerList(userList);
         }
     }
 }

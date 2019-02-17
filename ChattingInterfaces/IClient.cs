@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace ChattingInterfaces
 {
@@ -13,7 +14,6 @@ namespace ChattingInterfaces
         void GetMessage(string message, string userName);
 
         [OperationContract]
-        void GetPeerList(string peerList);
-  
+        void GetPeerList(string clientListForDisplay);
     }
 }

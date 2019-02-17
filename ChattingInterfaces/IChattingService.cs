@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace ChattingInterfaces
 {
@@ -11,12 +12,15 @@ namespace ChattingInterfaces
     public interface IChattingService
     {
         [OperationContract]
-        string Login(string userName);
+        string CreateSession(string userName);
 
         [OperationContract]
-        void SendMessageToAll(string message, string userName);
+        string JoinSession(string userName, Tuple<string, int> ownerIpAddress);
+
+        //[OperationContract]
+        //void Logout();
 
         [OperationContract]
-        void UpdatePeerList();
+        void SendMessageToAll(string message, string userName, Tuple<string, int> sessionOwnerIpAddress);
     }
 }
