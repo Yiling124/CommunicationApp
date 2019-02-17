@@ -20,7 +20,7 @@
         </TextBox>
         <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" Margin="647,354,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="SendMessageButton_Click"/>
         <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="34,354,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="583"/>
-        <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="257" Margin="34,66,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="465" RenderTransformOrigin="0.5,0.5">
+        <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="120" Margin="34,39,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="465" RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -66,6 +66,28 @@
             </TextBox.RenderTransform>
         </TextBox>
         <Button Name="JoinSessionButton" IsDefault="True" Content="Join Session&#xD;&#xA;" HorizontalAlignment="Left" Margin="573,282,0,0" VerticalAlignment="Top" Width="179" Height="54" Click="JoinSessionButton_Click"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="138,211,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-1.353"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="1.476"/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
+        <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="143,183,0,0" VerticalAlignment="Top" Width="179"/>
+        <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="143,261,0,0" VerticalAlignment="Top" Width="179"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="138,285,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="-1.353"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="1.476"/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
 
     </Grid>
 </Window>
