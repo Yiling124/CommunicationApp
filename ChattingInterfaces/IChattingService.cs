@@ -12,15 +12,18 @@ namespace ChattingInterfaces
     public interface IChattingService
     {
         [OperationContract]
-        string CreateSession(string userName);
+        Tuple<string, string, int> CreateSession(string userName);
 
         [OperationContract]
-        string JoinSession(string userName, Tuple<string, int> ownerIpAddress);
+        Tuple<string, string, int> JoinSession(string userName, Tuple<string, int> ownerIpAddress);
 
         [OperationContract]
         void Logout(Tuple<string, int> sessionOwnerIpAddress);
 
         [OperationContract]
         void SendMessageToAll(string message, string userName, Tuple<string, int> sessionOwnerIpAddress);
+
+        [OperationContract]
+        bool SendPrivateMessage(string message, string userName, Tuple<string, int> receiverIpAddress, Tuple<string, int> sessionOwnerIpAddress);
     }
 }

@@ -28,7 +28,7 @@ namespace ChattingServer
             return newClient;
         }
 
-        public string CreateSession(string userName)
+        public Tuple<string, string, int> CreateSession(string userName)
         {
             // create new client as owner of new session
             ConnectedClient newClient = createNewConnectedClient(userName);
@@ -41,15 +41,11 @@ namespace ChattingServer
             Session newSession = new Session();
             newSession.setOwnerAddress(newClient.IpAddress);
             sessionMg.AddSession(newSession.getOwnerAddress(), newSession);
-            string clientListForDisplay = JoinSession(userName, newClient.IpAddress);
-
-            return clientListForDisplay;
+            return  JoinSession(userName, newClient.IpAddress);
         }
 
-        public string JoinSession(string userName, Tuple<string, int> ownerIpAddress)
+        public Tuple<string, string, int> JoinSession(string userName, Tuple<string, int> ownerIpAddress)
         {
-            Console.WriteLine("Join Session OWNER Ip:  {0} , port : {1} " , ownerIpAddress.Item1, ownerIpAddress.Item2);
-
             if (sessionMg.getAllSessions().ContainsKey(ownerIpAddress))
             {
                 ConnectedClient newClientToJoin = createNewConnectedClient(userName);
@@ -58,17 +54,17 @@ namespace ChattingServer
                 sessionToJoin.AddClient(newClientToJoin.IpAddress, newClientToJoin);
 
                 ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList = sessionToJoin.getClientList();
-                ConcurrentDictionary<Tuple<string, int>, string> clientListForDisplay = BuildSessionClientsListDisp(currentSessionClientList);
+                ConcurrentDictionary<Tuple<string, int>, string> clientStrListForDisplay = BuildSessionClientsListDisp(currentSessionClientList);
 
                 // send session client list to all the peers except for sender himself
-                string listForDisplay = BuildSessionClientList(currentSessionClientList);
-                SendUpdatedClientList(listForDisplay, currentSessionClientList, newClientToJoin.IpAddress);
-                return listForDisplay;
+                string strListForDisplay = BuildSessionStrClientList(currentSessionClientList);
+                SendUpdatedClientList(strListForDisplay, currentSessionClientList, newClientToJoin.IpAddress);
+                return new Tuple<string, string, int>(strListForDisplay, ownerIpAddress.Item1, ownerIpAddress.Item2);
             }
             return null;
         }
 
-        private void SendUpdatedClientList(string listForDisplay, ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList, Tuple<string, int> IpAddressToAvoid)
+        private void SendUpdatedClientList(string strListForDisplay, ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList, Tuple<string, int> IpAddressToAvoid)
         {
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in currentSessionClientList)
             {
@@ -76,12 +72,12 @@ namespace ChattingServer
                 {
                     continue;
                 }
-                entry.Value.connection.GetPeerList(listForDisplay);
+                entry.Value.connection.GetPeerList(strListForDisplay);
             }
 
         }
 
-        public string BuildSessionClientList(ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList)
+        public string BuildSessionStrClientList(ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList)
         {
             string listForDisplay = "";
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in currentSessionClientList)
@@ -103,6 +99,7 @@ namespace ChattingServer
 
         public void SendMessageToAll(string message, string userName, Tuple<string, int> sessionOwnerIp)
         {
+            Console.WriteLine("send Message got called");
             Tuple<string, int> MsgSenderIpAddress = GetIpAddress(OperationContext.Current);
             Session targetSession = sessionMg.getAllSessions()[sessionOwnerIp];
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
@@ -113,6 +110,21 @@ namespace ChattingServer
                     entry.Value.connection.GetMessage(message, userName);
                 }
             }
+        }
+
+        public bool SendPrivateMessage(string message, string userName, Tuple<string, int> receiverIpAddress, Tuple<string, int> sessionOwnerIpAddress)
+        {
+            Tuple<string, int> MsgSenderIpAddress = GetIpAddress(OperationContext.Current);
+            Session targetSession = sessionMg.getAllSessions()[sessionOwnerIpAddress];
+            if (targetSession.getClientList().ContainsKey(receiverIpAddress))
+            {
+                ConnectedClient receiver = targetSession.getClientList()[receiverIpAddress];
+                receiver.connection.GetMessage(message, userName);
+            }
+            else {
+                return false;
+            }
+            return true;
         }
 
         public void Logout(Tuple<string, int> sessionOwnerIpAddress)
@@ -127,7 +139,7 @@ namespace ChattingServer
                 {
                     ConnectedClient removedClient;
                     sessionClientList.TryRemove(client.Value.IpAddress, out removedClient);
-                    clientListForDisplay = BuildSessionClientList(sessionClientList);
+                    clientListForDisplay = BuildSessionStrClientList(sessionClientList);
                     SendUpdatedClientList(clientListForDisplay, sessionClientList, null);
                     return;
                 }
