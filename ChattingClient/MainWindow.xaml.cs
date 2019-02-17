@@ -75,14 +75,15 @@ namespace ChattingClient
 
         public void DisplayOnlinePeerList(string userList)
         {
-            TextDisplayTextBox_OnlinePeers.Text = "";
             TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            //Server.Logout();
+            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
+            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
+            Server.Logout(sessionOwnerIpAddress);
         }
 
         private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
