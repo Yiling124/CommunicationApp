@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChattingServer
 {
-    class Program
+    class Program 
     {
         public static ChattingService _server;
         static void Main(string[] args)

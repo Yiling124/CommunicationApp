@@ -99,9 +99,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChattingInterfaces\ChattingInterfaces.csproj">
+    <ProjectReference Include="..\ChattingInterfaces\SharedLibrary.csproj">
       <Project>{e0ac5065-37c0-4777-9bec-2eec1941b466}</Project>
-      <Name>ChattingInterfaces</Name>
+      <Name>SharedLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

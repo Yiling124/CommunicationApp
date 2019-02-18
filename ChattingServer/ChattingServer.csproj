@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="ChattingService.cs" />
     <Compile Include="ConnectedClient.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Session.cs" />
@@ -74,9 +75,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ChattingInterfaces\ChattingInterfaces.csproj">
+    <ProjectReference Include="..\ChattingInterfaces\SharedLibrary.csproj">
       <Project>{e0ac5065-37c0-4777-9bec-2eec1941b466}</Project>
-      <Name>ChattingInterfaces</Name>
+      <Name>SharedLibrary</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

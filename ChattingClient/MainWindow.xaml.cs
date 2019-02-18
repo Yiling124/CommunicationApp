@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace ChattingClient
 {
     /// <summary>
@@ -26,6 +27,7 @@ namespace ChattingClient
     {
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
+      
 
         public MainWindow()
         {
@@ -35,9 +37,15 @@ namespace ChattingClient
 
         }
 
-        public void TakeMessage(string message, string userName)
+        public void TakeMessage(string message, string userName, bool isPrivate)
         {
-            TextDisplayTextBox.Text += userName + ":" + message + "\n";
+            if (isPrivate)
+            {
+                TextDisplayTextBox.Text += "(Privte Msg) " + userName + ":" + message + "\n";
+            }
+            else {
+                TextDisplayTextBox.Text += userName + ":" + message + "\n";
+            }
             TextDisplayTextBox.ScrollToEnd();
         }
 
@@ -82,9 +90,9 @@ namespace ChattingClient
                 int privateReceiverPort = Convert.ToInt32(receiverPortTextBox.Text);
                 Tuple<string, int> privateReceiverIpAddress = new Tuple<string, int>(receiverIpTextBox.Text, privateReceiverPort);
 
-                if (Server.SendPrivateMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
+                if (Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
                 {
-                    TakeMessage(MessageTextBox.Text, "you");
+                    TakeMessage(MessageTextBox.Text, "you", true);
                 }
                 else {
                     MessageBox.Show("The message receiver is not in your session");
@@ -93,8 +101,8 @@ namespace ChattingClient
                 receiverPortTextBox.Text = "";
                 
             } else {
-                Server.SendMessageToAll(MessageTextBox.Text, userNameTextBox.Text, sessionOwnerIpAddress);
-                TakeMessage(MessageTextBox.Text, "you");
+                Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, null, sessionOwnerIpAddress);
+                TakeMessage(MessageTextBox.Text, "you", false);
             }
             MessageTextBox.Text = "";
         }
@@ -120,6 +128,9 @@ namespace ChattingClient
             int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
             Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
             string userList = Server.JoinSession(userNameTextBox.Text, sessionOwnerIpAddress).Item1;
+
+            MessageBox.Show("join session got called" + userList);
+
             DisplayOnlinePeerList(userList);
             sessionOwnerPortTextBox.IsEnabled = false;
             sessionOwnerIpTextBox.IsEnabled = false;

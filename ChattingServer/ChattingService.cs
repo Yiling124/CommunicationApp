@@ -8,6 +8,8 @@ using System.ServiceModel.Channels;
 using System.Text;
 using System.Collections.Concurrent;
 using System.Collections;
+using System.Threading;
+using BlockingQueue;
 
 namespace ChattingServer
 {
@@ -15,7 +17,41 @@ namespace ChattingServer
 
     public class ChattingService : IChattingService
     {
-        SessionManager sessionMg = new SessionManager();
+        SessionManager sessionMg = null;
+        BlockingQueue<Message> messageBlockingQ = null;
+        Thread messageThrd = null;
+
+        public ChattingService()
+        {
+            sessionMg = new SessionManager();
+            messageBlockingQ = new BlockingQueue<Message>();
+            messageThrd = new Thread(ThreadProc);
+            messageThrd.IsBackground = true;
+            messageThrd.Start();
+        }
+
+        private void ThreadProc()
+        {
+            while (true)
+            {
+                Message msg = messageBlockingQ.deQ();
+                Session targetSession = sessionMg.getAllSessions()[msg.sessionOwnerAddress];
+                if (msg.receiverIPAddress != null)
+                {
+                    Console.WriteLine("rceiverIP: " + msg.receiverIPAddress);
+                    ConnectedClient receiver = targetSession.getClientList()[msg.receiverIPAddress];
+                    receiver.connection.GetMessage(msg.messageContent, msg.senderName, true);
+                } else {
+                    foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
+                    {
+                        if (!(entry.Value.UserName).Equals(msg.senderName))
+                        {
+                            entry.Value.connection.GetMessage(msg.messageContent, msg.senderName, false);
+                        }
+                    }
+                }
+            }
+        }
 
         private ConnectedClient createNewConnectedClient(string userName)
         {
@@ -77,7 +113,7 @@ namespace ChattingServer
 
         }
 
-        public string BuildSessionStrClientList(ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList)
+        private string BuildSessionStrClientList(ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList)
         {
             string listForDisplay = "";
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in currentSessionClientList)
@@ -97,33 +133,19 @@ namespace ChattingServer
             return SessionClientListForDisplay;
         }
 
-        public void SendMessageToAll(string message, string userName, Tuple<string, int> sessionOwnerIp)
+        public bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerIP)
         {
-            Console.WriteLine("send Message got called");
-            Tuple<string, int> MsgSenderIpAddress = GetIpAddress(OperationContext.Current);
-            Session targetSession = sessionMg.getAllSessions()[sessionOwnerIp];
-            foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
-            {
-                if (!(entry.Key).Equals(MsgSenderIpAddress))
-                {
-                    Console.WriteLine("sending message - receiver IP: " + entry.Key + "receiver Name: " + entry.Value.UserName);
-                    entry.Value.connection.GetMessage(message, userName);
-                }
-            }
-        }
+            Session targetSession = sessionMg.getAllSessions()[sessionOwnerIP];
+            if (targetSession == null) return false;
+            if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
-        public bool SendPrivateMessage(string message, string userName, Tuple<string, int> receiverIpAddress, Tuple<string, int> sessionOwnerIpAddress)
-        {
-            Tuple<string, int> MsgSenderIpAddress = GetIpAddress(OperationContext.Current);
-            Session targetSession = sessionMg.getAllSessions()[sessionOwnerIpAddress];
-            if (targetSession.getClientList().ContainsKey(receiverIpAddress))
+            if (receiverIP != null)
             {
-                ConnectedClient receiver = targetSession.getClientList()[receiverIpAddress];
-                receiver.connection.GetMessage(message, userName);
+                Console.WriteLine("chekcing the receiveIP : " + !targetSession.getClientList().ContainsKey(receiverIP));
             }
-            else {
-                return false;
-            }
+
+            Message msgToSend = new Message(message, userName, sessionOwnerIP, receiverIP, MessageType.text);
+            messageBlockingQ.enQ(msgToSend);
             return true;
         }
 
@@ -156,8 +178,6 @@ namespace ChattingServer
                     as System.ServiceModel.Channels.RemoteEndpointMessageProperty;
                 if (endpoint != null)
                 {
-                    Console.WriteLine("Client Address:{0}, Port:{1}", endpoint.Address, endpoint.Port);
-
                     Tuple<string, int> IpAddress = new Tuple<string, int>(endpoint.Address, endpoint.Port);
                     return IpAddress;
                 }

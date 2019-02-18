@@ -14,9 +14,9 @@ namespace ChattingClient
     [CallbackBehavior(ConcurrencyMode = ConcurrencyMode.Multiple)]
     public class ClientCallback : IClient
     {
-        public void GetMessage(string message, string userName)
+        public void GetMessage(string message, string userName, bool isPrivate)
         {
-            ((MainWindow)Application.Current.MainWindow).TakeMessage(message, userName);
+            ((MainWindow)Application.Current.MainWindow).TakeMessage(message, userName, isPrivate);
         }
 
         public void GetPeerList(string clientList)
