@@ -89,6 +89,8 @@ namespace ChattingClient
             {
                 int privateReceiverPort = Convert.ToInt32(receiverPortTextBox.Text);
                 Tuple<string, int> privateReceiverIpAddress = new Tuple<string, int>(receiverIpTextBox.Text, privateReceiverPort);
+                MessageBox.Show("xmal private msg call: IP iterm1: " + privateReceiverIpAddress.Item1);
+                MessageBox.Show("xmal private msg call: IP iterm1: " + privateReceiverIpAddress.Item2);
 
                 if (Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
                 {

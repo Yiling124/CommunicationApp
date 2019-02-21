@@ -12,16 +12,16 @@ namespace ChattingServer
     {
         public string messageContent { get; set; }
         public string senderName { get; set; }
-        public Tuple<string, int> sessionOwnerAddress { get; set; }
+        public Tuple<string, int> sessionOwnerIPAddress { get; set; }
         public Tuple<string, int> receiverIPAddress { get; set; }
         public MessageType type;
 
-        public Message(string textConent, string sderName, Tuple<string, int> ownerIp, Tuple<string, int> receiverIp, MessageType msgType)
+        public Message(string textConent, string sderName, Tuple<string, int> receiverIp, Tuple<string, int> ownerIp, MessageType msgType)
         {
             this.messageContent = textConent;
             this.senderName = sderName;
-            this.sessionOwnerAddress = ownerIp;
-            this.receiverIPAddress = receiverIPAddress;
+            this.sessionOwnerIPAddress = ownerIp;
+            this.receiverIPAddress = receiverIp;
             this.type = msgType;
         }
     }

@@ -35,20 +35,27 @@ namespace ChattingServer
             while (true)
             {
                 Message msg = messageBlockingQ.deQ();
-                Session targetSession = sessionMg.getAllSessions()[msg.sessionOwnerAddress];
-                if (msg.receiverIPAddress != null)
+                distributeMsg(msg);
+            }
+        }
+
+        private void distributeMsg(Message msg)
+        {
+            Session targetSession = sessionMg.getAllSessions()[msg.sessionOwnerIPAddress];
+
+            if (msg.receiverIPAddress != null)
+            {
+                Console.WriteLine("rceiverIP != null: " + msg.receiverIPAddress.Item1);
+                ConnectedClient receiver = targetSession.getClientList()[msg.receiverIPAddress];
+                receiver.connection.GetMessage(msg.messageContent, msg.senderName, true);
+                return;
+            }
+            foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
+            {
+                Console.WriteLine("rceiverIP == null: " + msg.receiverIPAddress);
+                if (!(entry.Value.UserName).Equals(msg.senderName))
                 {
-                    Console.WriteLine("rceiverIP: " + msg.receiverIPAddress);
-                    ConnectedClient receiver = targetSession.getClientList()[msg.receiverIPAddress];
-                    receiver.connection.GetMessage(msg.messageContent, msg.senderName, true);
-                } else {
-                    foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
-                    {
-                        if (!(entry.Value.UserName).Equals(msg.senderName))
-                        {
-                            entry.Value.connection.GetMessage(msg.messageContent, msg.senderName, false);
-                        }
-                    }
+                    entry.Value.connection.GetMessage(msg.messageContent, msg.senderName, false);
                 }
             }
         }
@@ -139,12 +146,7 @@ namespace ChattingServer
             if (targetSession == null) return false;
             if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
-            if (receiverIP != null)
-            {
-                Console.WriteLine("chekcing the receiveIP : " + !targetSession.getClientList().ContainsKey(receiverIP));
-            }
-
-            Message msgToSend = new Message(message, userName, sessionOwnerIP, receiverIP, MessageType.text);
+            Message msgToSend = new Message(message, userName, receiverIP, sessionOwnerIP, MessageType.text);
             messageBlockingQ.enQ(msgToSend);
             return true;
         }
