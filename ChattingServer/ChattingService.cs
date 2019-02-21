@@ -45,14 +45,12 @@ namespace ChattingServer
 
             if (msg.receiverIPAddress != null)
             {
-                Console.WriteLine("rceiverIP != null: " + msg.receiverIPAddress.Item1);
                 ConnectedClient receiver = targetSession.getClientList()[msg.receiverIPAddress];
                 receiver.connection.GetMessage(msg.messageContent, msg.senderName, true);
                 return;
             }
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
             {
-                Console.WriteLine("rceiverIP == null: " + msg.receiverIPAddress);
                 if (!(entry.Value.UserName).Equals(msg.senderName))
                 {
                     entry.Value.connection.GetMessage(msg.messageContent, msg.senderName, false);

@@ -89,8 +89,6 @@ namespace ChattingClient
             {
                 int privateReceiverPort = Convert.ToInt32(receiverPortTextBox.Text);
                 Tuple<string, int> privateReceiverIpAddress = new Tuple<string, int>(receiverIpTextBox.Text, privateReceiverPort);
-                MessageBox.Show("xmal private msg call: IP iterm1: " + privateReceiverIpAddress.Item1);
-                MessageBox.Show("xmal private msg call: IP iterm1: " + privateReceiverIpAddress.Item2);
 
                 if (Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
                 {
@@ -131,7 +129,7 @@ namespace ChattingClient
             Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
             string userList = Server.JoinSession(userNameTextBox.Text, sessionOwnerIpAddress).Item1;
 
-            MessageBox.Show("join session got called" + userList);
+            MessageBox.Show("welcome to the chat session!");
 
             DisplayOnlinePeerList(userList);
             sessionOwnerPortTextBox.IsEnabled = false;
