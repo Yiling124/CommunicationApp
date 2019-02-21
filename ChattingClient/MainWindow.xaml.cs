@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BlockingQueue;
 
 
 namespace ChattingClient
@@ -27,7 +28,7 @@ namespace ChattingClient
     {
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
-      
+        
 
         public MainWindow()
         {

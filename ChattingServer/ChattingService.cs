@@ -18,13 +18,13 @@ namespace ChattingServer
     public class ChattingService : IChattingService
     {
         SessionManager sessionMg = null;
-        BlockingQueue<Message> messageBlockingQ = null;
+        BlockingQueue<TextMessage> messageBlockingQ = null;
         Thread messageThrd = null;
 
         public ChattingService()
         {
             sessionMg = new SessionManager();
-            messageBlockingQ = new BlockingQueue<Message>();
+            messageBlockingQ = new BlockingQueue<TextMessage>();
             messageThrd = new Thread(ThreadProc);
             messageThrd.IsBackground = true;
             messageThrd.Start();
@@ -34,26 +34,26 @@ namespace ChattingServer
         {
             while (true)
             {
-                Message msg = messageBlockingQ.deQ();
+                TextMessage msg = messageBlockingQ.deQ();
                 distributeMsg(msg);
             }
         }
 
-        private void distributeMsg(Message msg)
+        private void distributeMsg(TextMessage msg)
         {
-            Session targetSession = sessionMg.getAllSessions()[msg.sessionOwnerIPAddress];
+            Session targetSession = sessionMg.getAllSessions()[msg.TextSessionOwnerAds];
 
-            if (msg.receiverIPAddress != null)
+            if (msg.TextReceiverAds != null)
             {
-                ConnectedClient receiver = targetSession.getClientList()[msg.receiverIPAddress];
-                receiver.connection.GetMessage(msg.messageContent, msg.senderName, true);
+                ConnectedClient receiver = targetSession.getClientList()[msg.TextReceiverAds];
+                receiver.connection.GetMessage(msg.TextMessageContent, msg.TextsenderName, true);
                 return;
             }
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
             {
-                if (!(entry.Value.UserName).Equals(msg.senderName))
+                if (!(entry.Value.UserName).Equals(msg.TextsenderName))
                 {
-                    entry.Value.connection.GetMessage(msg.messageContent, msg.senderName, false);
+                    entry.Value.connection.GetMessage(msg.TextMessageContent, msg.TextsenderName, false);
                 }
             }
         }
@@ -144,7 +144,7 @@ namespace ChattingServer
             if (targetSession == null) return false;
             if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
-            Message msgToSend = new Message(message, userName, receiverIP, sessionOwnerIP, MessageType.text);
+            TextMessage msgToSend = new TextMessage(message, userName, receiverIP, sessionOwnerIP);
             messageBlockingQ.enQ(msgToSend);
             return true;
         }

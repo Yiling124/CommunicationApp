@@ -57,6 +57,7 @@
     <Compile Include="BlockingQueue.cs" />
     <Compile Include="IChattingService.cs" />
     <Compile Include="IClient.cs" />
+    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
