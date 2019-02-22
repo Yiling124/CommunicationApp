@@ -1,31 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+//using ChattingClient;
+//using System.Windows;
 
-namespace ChattingClient
-{
-    class DisplayableTextMessage 
-    {
-        public void Display()
-        {
-        }
-    }
-}
-
-
-//public class DisplayableTextMessage implements IDisplayable;
-
-//    void GetMessage(string contents, string sender)
+//namespace ChattingClient
+//{
+//    class DisplayableTextMessage : IDisplayable
 //    {
-//        IDisplayble text_message_displayable = new DisplayableTextMessage(contents, sender);
-//        BlockingQueue.enqueue(text_message_displayable);
-//    }
+//        public bool isPrivate;
+//        public string userName;
+//        public string textMessage;
 
-//    void GetUML(string uml_param1, string uml_param2, ...)
-//    {
-//        IDisplayble uml_displayable = new DisplayableUML(uml_param1, uml_param2);
-//        uml_displayable.Display();
+//        public DisplayableTextMessage(string messageContent, string userName,bool isPrivate)
+//        {
+//            this.textMessage = messageContent;
+//            this.userName = userName;
+//            this.isPrivate = isPrivate;
+//        }
 
+//        public string getContent()
+//        {
+//            return this.textMessage;
+//        }
+
+//        public void Display(MainWindow window)
+//        {
+//            string messageForDisplay = "";
+//            if (isPrivate)
+//            {
+//                messageForDisplay += "(Private Msg) " + this.userName + ":" + this.textMessage + "\n";
+//            }
+//            else
+//            {
+//                messageForDisplay += this.userName + ":" + this.textMessage + "\n";
+//            }
+//            window.MessageTextBox.Text += messageForDisplay;
+//            window.TextDisplayTextBox.ScrollToEnd();
+//            window.MessageTextBox.Text = "";
+//        }
 //    }
+//}

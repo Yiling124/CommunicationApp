@@ -6,7 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Collections.Concurrent;
 
-namespace ChattingInterfaces
+namespace ChattingClient
 {
     [ServiceContract(CallbackContract = typeof(IClient))]
     public interface IChattingService

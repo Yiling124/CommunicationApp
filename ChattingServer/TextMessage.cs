@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ChattingInterfaces;
+using ChattingClient;
 using ChattingServer;
 
 namespace ChattingServer
@@ -11,14 +11,14 @@ namespace ChattingServer
     public class TextMessage : IMessage
     {
         public string TextMessageContent { get; set; }
-        public string TextsenderName { get; set; }
+        public string TextSenderName { get; set; }
         public Tuple<string, int> TextSessionOwnerAdrs { get; set; }
         public Tuple<string, int> TextReceiverAdrs { get; set; }
 
         public TextMessage(string textConent, string sderName, Tuple<string, int> receiverIp, Tuple<string, int> ownerIp)
         {
             this.TextMessageContent = textConent;
-            this.TextsenderName = sderName;
+            this.TextSenderName = sderName;
             this.TextReceiverAdrs = receiverIp;
             this.TextSessionOwnerAdrs = ownerIp;
         }
@@ -35,12 +35,12 @@ namespace ChattingServer
 
         public void Send(IClient receipient, bool isPrivate)
         {
-            receipient.GetMessage(this.TextMessageContent, this.TextsenderName, isPrivate);
+            receipient.GetMessage(this.TextMessageContent, this.TextSenderName, isPrivate);
         }
 
         public string GetSenderName()
         {
-            return this.TextsenderName;
+            return this.TextSenderName;
         }
     }
 }

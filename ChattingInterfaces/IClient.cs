@@ -6,7 +6,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
-namespace ChattingInterfaces
+namespace ChattingClient
 {
     public interface IClient
     {

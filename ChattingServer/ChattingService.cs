@@ -1,4 +1,4 @@
-﻿using ChattingInterfaces;
+﻿using ChattingClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +21,6 @@ namespace ChattingServer
         BlockingQueue<IMessage> messageBlockingQ = null;
         Thread messageThrd = null;
 
-        public SessionManager GetSessionManager()
-        {
-            return this.sessionMg;
-        }
-
         public ChattingService()
         {
             sessionMg = new SessionManager();
@@ -43,10 +38,12 @@ namespace ChattingServer
 
                 Session targetSession = sessionMg.getAllSessions()[msg.GetSessionOwnerAdrs()];
                 if (targetSession == null) continue;
+
                 ConnectedClient receipient;
                 if (msg.GetRecipientAdrs() != null)
                 {
                     receipient = targetSession.getClientList()[msg.GetRecipientAdrs()];
+                    Console.WriteLine("serverside, a private message - receiptiebt: " + receipient);
                     msg.Send(receipient.connection, true);
                     continue;
                 }
@@ -54,6 +51,7 @@ namespace ChattingServer
                 {
                     if (!(entry.Value.UserName).Equals(msg.GetSenderName()))
                     {
+                        Console.WriteLine("serverside, a public message - receiptiebt: " + entry.Value.UserName);
                         msg.Send(entry.Value.connection, false);
                     }
                 }
@@ -74,14 +72,11 @@ namespace ChattingServer
 
         public Tuple<string, string, int> CreateSession(string userName)
         {
-            // create new client as owner of new session
             ConnectedClient newClient = createNewConnectedClient(userName);
 
             // Check if this session Owner already has own session created
-            if (sessionMg.getAllSessions().ContainsKey(newClient.IpAddress))
-            {
-                return null;
-            }
+            if (sessionMg.getAllSessions().ContainsKey(newClient.IpAddress)) return null;
+            
             Session newSession = new Session();
             newSession.setOwnerAddress(newClient.IpAddress);
             sessionMg.AddSession(newSession.getOwnerAddress(), newSession);
@@ -112,10 +107,7 @@ namespace ChattingServer
         {
             foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in currentSessionClientList)
             {
-                if (IpAddressToAvoid != null && IpAddressToAvoid == entry.Key)
-                {
-                    continue;
-                }
+                if (IpAddressToAvoid != null && IpAddressToAvoid == entry.Key) continue;
                 entry.Value.connection.GetPeerList(strListForDisplay);
             }
 
@@ -143,12 +135,15 @@ namespace ChattingServer
 
         public bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerIP)
         {
+            Console.WriteLine("serverside sendTextMsg got called");
             Session targetSession = sessionMg.getAllSessions()[sessionOwnerIP];
             if (targetSession == null) return false;
             if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
             IMessage msgToSend = new TextMessage(message, userName, receiverIP, sessionOwnerIP);
             messageBlockingQ.enQ(msgToSend);
+            Console.WriteLine("serverside message onqueued");
+
             return true;
         }
 

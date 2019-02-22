@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ServiceModel;
 using System.Threading.Tasks;
-using ChattingInterfaces;
+using ChattingClient;
 using System.Windows;
 using System.Collections.Concurrent;
 

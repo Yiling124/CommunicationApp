@@ -65,7 +65,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ClientCallback.cs" />
+    <Compile Include="DeliverableTextMessage.cs" />
     <Compile Include="DisplayableTextMessage.cs" />
+    <Compile Include="IDisplayable.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
