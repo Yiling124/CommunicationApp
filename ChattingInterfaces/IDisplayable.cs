@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChattingInterfaces
 {
-    interface Message
+    interface IDisplayable
     {
-        void DisplayMsg();
+        void Display();
     }
 }

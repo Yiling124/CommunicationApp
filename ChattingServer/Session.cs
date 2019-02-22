@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace ChattingServer
 {
-    class Session
+    public class Session
     {
         private ConcurrentDictionary<Tuple<string, int>, ConnectedClient> clientList = new ConcurrentDictionary<Tuple<string, int>, ConnectedClient>();
         private Tuple<string, int> OwnerAddress;

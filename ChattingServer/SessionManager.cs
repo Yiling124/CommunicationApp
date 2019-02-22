@@ -8,7 +8,7 @@ using System.Collections;
 
 namespace ChattingServer
 {
-    class SessionManager
+    public class SessionManager
     {
         private ConcurrentDictionary<Tuple<string, int>, Session> sessionsList = new ConcurrentDictionary<Tuple<string, int>, Session>();
 
