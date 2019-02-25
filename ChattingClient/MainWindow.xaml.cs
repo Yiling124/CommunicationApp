@@ -54,6 +54,7 @@ namespace ChattingClient
 
         private void CreateSessionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (userNameTextBox.Text.Length == 0) return;
             Tuple<string, string, int>  newSessionInfo = Server.CreateSession(userNameTextBox.Text);
             string ClientListForDisplay = newSessionInfo.Item1;
 
@@ -110,6 +111,7 @@ namespace ChattingClient
         public void DisplayOnlinePeerList(string userList)
         {
             TextDisplayTextBox_OnlinePeers.Text = userList;
+            TextDisplayTextBox_OnlinePeers.IsEnabled = false;
             TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
@@ -122,6 +124,7 @@ namespace ChattingClient
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            if (sessionOwnerIpTextBox.Text.Length == 0 && sessionOwnerPortTextBox.Text.Length == 0) return;
             Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
             Server.Logout(sessionOwnerIpAddress);
         }
