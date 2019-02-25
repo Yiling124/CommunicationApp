@@ -88,6 +88,21 @@ namespace ChattingServer
             return  JoinSession(userName, newClient.IpAddress);
         }
 
+        public Tuple<string, string, int> RequestJoin(string userName, Tuple<string, int> ssOwnerAdrs)
+        {
+            Session sessionFound;
+            sessionMg.getAllSessions().TryGetValue(ssOwnerAdrs, out sessionFound);
+            if (sessionFound != null)
+            {
+                ConnectedClient ssOwner;
+                sessionFound.getClientList().TryGetValue(ssOwnerAdrs, out ssOwner);
+                if (ssOwner.connection.ApproveJoin(userName)) {
+                    return JoinSession(userName, ssOwnerAdrs);
+                }
+            }
+            return null;
+        }
+        
         public Tuple<string, string, int> JoinSession(string userName, Tuple<string, int> ownerIpAddress)
         {
             if (sessionMg.getAllSessions().ContainsKey(ownerIpAddress))

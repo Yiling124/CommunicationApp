@@ -22,5 +22,8 @@ namespace ChattingInterfaces
 
         [OperationContract]
         bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIpAddress, Tuple<string, int> sessionOwnerIpAddress);
+
+        [OperationContract]
+        Tuple<string, string, int> RequestJoin(string userName, Tuple<string, int> ssOwnerAdrs);
     }
 }

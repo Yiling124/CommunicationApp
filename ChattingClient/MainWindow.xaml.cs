@@ -28,6 +28,7 @@ namespace ChattingClient
     {
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
+
         
 
         public MainWindow()
@@ -83,13 +84,11 @@ namespace ChattingClient
                 return;
             }
 
-            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
-            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
+            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
 
             if (!string.IsNullOrEmpty(receiverIpTextBox.Text) && !string.IsNullOrEmpty(receiverPortTextBox.Text))
             {
-                int privateReceiverPort = Convert.ToInt32(receiverPortTextBox.Text);
-                Tuple<string, int> privateReceiverIpAddress = new Tuple<string, int>(receiverIpTextBox.Text, privateReceiverPort);
+                Tuple<string, int> privateReceiverIpAddress = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
 
                 if (Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
                 {
@@ -114,28 +113,64 @@ namespace ChattingClient
             TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
+        private Tuple<string, int> buildIpAdrs(string ip, string port)
+        {
+            if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(port)) return null;
+            Tuple<string, int> adrs;
+            return adrs = new Tuple<string, int>(ip, Convert.ToInt32(port));
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
-            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
+            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
             Server.Logout(sessionOwnerIpAddress);
+        }
+
+        private void RequestJoin()
+        {
+            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
+            Tuple<string, string, int> peerList = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
+            if (peerList != null)
+            {
+                DisplayOnlinePeerList(peerList.Item1);
+                MessageBox.Show("Welcome to the chat session!");
+                userNameTextBox.IsEnabled = false;
+                sessionOwnerPortTextBox.IsEnabled = false;
+                sessionOwnerIpTextBox.IsEnabled = false;
+                JoinSessionButton.IsEnabled = false;
+            }
+            else {
+                MessageBox.Show("OOPS, Pls double check session address!");
+                sessionOwnerPortTextBox.Text = "";
+                sessionOwnerIpTextBox.Text = "";
+            }
+        }
+
+        public bool isApproved(string userName)
+        {
+            string messageBoxText = String.Format("{0} wants to joint, approved?", userName);
+            string caption = "Join Session Request";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+            MessageBoxImage icon = MessageBoxImage.Warning;
+
+            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    return true;
+                case MessageBoxResult.No:
+                    return false;
+            }
+            return false;
         }
 
         private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
         {
-            WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
-            userNameTextBox.IsEnabled = false;
-
-            int sessionOwnerPort = Convert.ToInt32(sessionOwnerPortTextBox.Text);
-            Tuple<string, int> sessionOwnerIpAddress = new Tuple<string, int>(sessionOwnerIpTextBox.Text, sessionOwnerPort);
-            string userList = Server.JoinSession(userNameTextBox.Text, sessionOwnerIpAddress).Item1;
-
-            MessageBox.Show("welcome to the chat session!");
-
-            DisplayOnlinePeerList(userList);
-            sessionOwnerPortTextBox.IsEnabled = false;
-            sessionOwnerIpTextBox.IsEnabled = false;
-            JoinSessionButton.IsEnabled = false;
+            if (userNameTextBox.Text.Length > 0 && sessionOwnerIpTextBox.Text.Length > 0 && sessionOwnerPortTextBox.Text.Length > 0)
+            {
+                RequestJoin();
+            }
         }
     }
 }

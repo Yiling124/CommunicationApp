@@ -23,5 +23,11 @@ namespace ChattingClient
         {
             ((MainWindow)Application.Current.MainWindow).DisplayOnlinePeerList(clientList);
         }
+
+        public bool ApproveJoin(string userName)
+        {
+            return ((MainWindow)Application.Current.MainWindow).isApproved(userName);
+        }
     }
 }
+ 

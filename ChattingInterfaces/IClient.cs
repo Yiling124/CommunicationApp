@@ -15,5 +15,8 @@ namespace ChattingInterfaces
 
         [OperationContract]
         void GetPeerList(string clientListForDisplay);
+
+        [OperationContract]
+        bool ApproveJoin(string userName);
     }
 }
