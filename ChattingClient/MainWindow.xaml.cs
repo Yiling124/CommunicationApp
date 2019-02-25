@@ -1,5 +1,4 @@
-﻿
-using ChattingInterfaces;
+﻿using ChattingInterfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BlockingQueue;
+using System.Threading;
 
 
 namespace ChattingClient
@@ -28,8 +28,8 @@ namespace ChattingClient
     {
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
-
-        
+        Thread msgOutThrd = null;
+        BlockingQueue<IDeliverable> msgOutBlockingQ;
 
         public MainWindow()
         {
@@ -37,6 +37,21 @@ namespace ChattingClient
             _channelFactory = new DuplexChannelFactory<IChattingService>(new ClientCallback(), "ChattingServiceEndPoint");
             Server = _channelFactory.CreateChannel();
 
+            msgOutBlockingQ = new BlockingQueue<IDeliverable>();
+            msgOutThrd = new Thread(MsgOutThreadProc);
+            msgOutThrd.IsBackground = true;
+            msgOutThrd.Start();
+        }
+
+        public void MsgOutThreadProc()
+        {
+            while (true)
+            {
+                IDeliverable msgForSendOut = msgOutBlockingQ.deQ();
+                bool isSent = msgForSendOut.SendOut(Server);
+                if (isSent) continue;
+                MessageBox.Show("Message failed.");
+            }
         }
 
         public void TakeMessage(string message, string userName, bool isPrivate)
@@ -48,6 +63,10 @@ namespace ChattingClient
             else {
                 TextDisplayTextBox.Text += userName + ":" + message + "\n";
             }
+
+            receiverIpTextBox.Text = "";
+            receiverPortTextBox.Text = "";
+            MessageTextBox.Text = "";
             TextDisplayTextBox.ScrollToEnd();
         }
 
@@ -80,32 +99,17 @@ namespace ChattingClient
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageTextBox.Text.Length == 0)
-            {
-                return;
-            }
+            if (MessageTextBox.Text.Length == 0) return;
 
-            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
+            Tuple<string, int> privatReceipientAdrs = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
+            Tuple<string, int> ssOwnerAdrs = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
 
-            if (!string.IsNullOrEmpty(receiverIpTextBox.Text) && !string.IsNullOrEmpty(receiverPortTextBox.Text))
-            {
-                Tuple<string, int> privateReceiverIpAddress = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
+            IDeliverable msgOut = new DeliverableTextMessage(MessageTextBox.Text, userNameTextBox.Text, privatReceipientAdrs, ssOwnerAdrs);
 
-                if (Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, privateReceiverIpAddress, sessionOwnerIpAddress))
-                {
-                    TakeMessage(MessageTextBox.Text, "you", true);
-                }
-                else {
-                    MessageBox.Show("The message receiver is not in your session");
-                }
-                receiverIpTextBox.Text = "";
-                receiverPortTextBox.Text = "";
-                
-            } else {
-                Server.SendTextMessage(MessageTextBox.Text, userNameTextBox.Text, null, sessionOwnerIpAddress);
-                TakeMessage(MessageTextBox.Text, "you", false);
-            }
-            MessageTextBox.Text = "";
+            msgOutBlockingQ.enQ(msgOut);
+
+            bool isPrivate = privatReceipientAdrs == null ? false : true;
+            TakeMessage(MessageTextBox.Text, "you", isPrivate);
         }
 
         public void DisplayOnlinePeerList(string userList)

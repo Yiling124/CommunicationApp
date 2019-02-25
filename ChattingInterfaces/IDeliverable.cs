@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ChattingInterfaces
 {
-    interface IDisplayable
+    public interface IDeliverable
     {
-        void Display();
+        bool SendOut(IChattingService Server);
     }
 }
