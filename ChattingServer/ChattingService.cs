@@ -74,7 +74,6 @@ namespace ChattingServer
 
         public Tuple<string, string, int> CreateSession(string userName)
         {
-            // create new client as owner of new session
             ConnectedClient newClient = createNewConnectedClient(userName);
 
             // Check if this session Owner already has own session created
@@ -90,6 +89,7 @@ namespace ChattingServer
 
         public Tuple<string, string, int> RequestJoin(string userName, Tuple<string, int> ssOwnerAdrs)
         {
+            if (ssOwnerAdrs == null) return null;
             Session sessionFound;
             sessionMg.getAllSessions().TryGetValue(ssOwnerAdrs, out sessionFound);
             if (sessionFound != null)
@@ -199,11 +199,7 @@ namespace ChattingServer
             {
                 var endpoint = prop[System.ServiceModel.Channels.RemoteEndpointMessageProperty.Name]
                     as System.ServiceModel.Channels.RemoteEndpointMessageProperty;
-                if (endpoint != null)
-                {
-                    Tuple<string, int> IpAddress = new Tuple<string, int>(endpoint.Address, endpoint.Port);
-                    return IpAddress;
-                }
+                if (endpoint != null) return new Tuple<string, int>(endpoint.Address, endpoint.Port);
             }
             return null;
         }

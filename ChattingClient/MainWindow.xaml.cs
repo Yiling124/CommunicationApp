@@ -121,7 +121,9 @@ namespace ChattingClient
 
         private Tuple<string, int> buildIpAdrs(string ip, string port)
         {
-            if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(port)) return null;
+            int portVal;
+            int.TryParse(port, out portVal);
+            if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(port) || portVal == 0) return null;
             Tuple<string, int> adrs;
             return adrs = new Tuple<string, int>(ip, Convert.ToInt32(port));
         }
