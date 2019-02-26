@@ -145,6 +145,7 @@ namespace ChattingClient
             Tuple<string, string, int> peerList = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
             if (peerList != null)
             {
+                WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
                 DisplayOnlinePeerList(peerList.Item1);
                 MessageBox.Show("Welcome to the chat session!");
                 userNameTextBox.IsEnabled = false;
