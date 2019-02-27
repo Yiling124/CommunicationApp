@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="1062" Closing="Window_Closing">
     <Grid Margin="0,0,-411,-184.5">
-        <Button Name="CreateSessionButton" IsDefault="True" Content="Create Session" HorizontalAlignment="Left" Margin="814,53,0,0" VerticalAlignment="Top" Width="115" Height="54" Click="CreateSessionButton_Click"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="533,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="265" Name ="userNameTextBox"  RenderTransformOrigin="0.5,0.5">
+        <Button Name="CreateSessionButton" IsDefault="True" Content="Create Session" HorizontalAlignment="Left" Margin="881,53,0,0" VerticalAlignment="Top" Width="115" Height="54" Click="CreateSessionButton_Click"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="573,60,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="265" Name ="userNameTextBox"  RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -18,8 +18,8 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" Margin="647,354,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="SendMessageButton_Click"/>
-        <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="34,354,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="583"/>
+        <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" Margin="542,354,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="SendMessageButton_Click"/>
+        <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="22,343,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="492"/>
         <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="120" Margin="34,39,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="465" RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
@@ -42,7 +42,7 @@
             </TextBox.RenderTransform>
         </TextBox>
         <Label x:Name="Connected_Client_Label" Content="Connected Users In Session:" HorizontalAlignment="Left" Margin="842,201,0,0" VerticalAlignment="Top" Width="167" RenderTransformOrigin="0.5,0.5"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="556,154,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="sessionOwnerIpTextBox"  RenderTransformOrigin="0.5,0.5">
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="600,154,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="sessionOwnerIpTextBox"  RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -52,10 +52,10 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <Label x:Name="SessionOwnerIPLabel" Content="Session Owner IP" HorizontalAlignment="Left" Margin="561,126,0,0" VerticalAlignment="Top" Width="179"/>
-        <Label x:Name="WelcomeLabel_Copy1" Content="Your Name:" HorizontalAlignment="Left" Margin="539,18,0,0" VerticalAlignment="Top" Width="179"/>
-        <Label x:Name="SessionOnwerPortLabel" Content="Session Owner Port" HorizontalAlignment="Left" Margin="561,204,0,0" VerticalAlignment="Top" Width="179"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="556,228,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="sessionOwnerPortTextBox"  RenderTransformOrigin="0.5,0.5">
+        <Label x:Name="SessionOwnerIPLabel" Content="Session Owner IP" HorizontalAlignment="Left" Margin="608,126,0,0" VerticalAlignment="Top" Width="179"/>
+        <Label x:Name="WelcomeLabel_Copy1" Content="Your Name:" HorizontalAlignment="Left" Margin="578,24,0,0" VerticalAlignment="Top" Width="179"/>
+        <Label x:Name="SessionOnwerPortLabel" Content="Session Owner Port" HorizontalAlignment="Left" Margin="604,204,0,0" VerticalAlignment="Top" Width="179"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="599,228,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="sessionOwnerPortTextBox"  RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -65,8 +65,8 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <Button Name="JoinSessionButton" IsDefault="True" Content="Join Session&#xD;&#xA;" HorizontalAlignment="Left" Margin="573,282,0,0" VerticalAlignment="Top" Width="179" Height="54" Click="JoinSessionButton_Click"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="138,211,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
+        <Button Name="JoinSessionButton" IsDefault="True" Content="Join Session&#xD;&#xA;" HorizontalAlignment="Left" Margin="615,282,0,0" VerticalAlignment="Top" Width="179" Height="54" Click="JoinSessionButton_Click"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="70,200,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -76,9 +76,9 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="143,183,0,0" VerticalAlignment="Top" Width="179"/>
-        <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="143,261,0,0" VerticalAlignment="Top" Width="179"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="138,285,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
+        <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="75,172,0,0" VerticalAlignment="Top" Width="179"/>
+        <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="75,250,0,0" VerticalAlignment="Top" Width="179"/>
+        <TextBox HorizontalAlignment="Left" Height="47" Margin="70,274,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
