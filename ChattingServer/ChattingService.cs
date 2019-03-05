@@ -1,4 +1,14 @@
-﻿using ChattingInterfaces;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements the Server of the Application, it allows all user to communicate through
+ *   Messages, a BlockingQueue is used to enque all the received messages and send them out to client 
+ */
+
+
+using ChattingInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +44,8 @@ namespace ChattingServer
             messageThrd.IsBackground = true;
             messageThrd.Start();
         }
-
+        
+        // all incoming message will be posted onto a BlockingQueue, and it will be dequeued to be sent to the recipient
         private void ThreadProc()
         {
             while (true)
@@ -61,6 +72,7 @@ namespace ChattingServer
             }
         }
 
+        // Connection channel is created by this function 
         private ConnectedClient createNewConnectedClient(string userName)
         {
             var establishedUserConnection = OperationContext.Current.GetCallbackChannel<IClient>();
@@ -146,6 +158,7 @@ namespace ChattingServer
             return listForDisplay;
         }
 
+        // updated peer list in each session will be rebuilt after new peer joining, or quitting 
         private ConcurrentDictionary<Tuple<string, int>, string> BuildSessionClientsListDisp(ConcurrentDictionary<Tuple<string, int>, ConnectedClient> currentSessionClientList)
         {
             ConcurrentDictionary<Tuple<string, int>, string> SessionClientListForDisplay = new ConcurrentDictionary<Tuple<string, int>, string>();
@@ -167,6 +180,8 @@ namespace ChattingServer
             return true;
         }
 
+        // peer will be deleted from the chat session when logging out, and the whole session will be deleted from the session Manager
+        // when the last peer of a chat session left 
         public void Logout(Tuple<string, int> sessionOwnerIpAddress)
         {
             var currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();

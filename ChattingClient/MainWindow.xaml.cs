@@ -1,4 +1,13 @@
-﻿using ChattingInterfaces;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements all the code related to UI controls, user will be able to interact with the application 
+ *   through this front end UI 
+ */
+
+using ChattingInterfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,6 +40,8 @@ namespace ChattingClient
         Thread msgOutThrd = null;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
 
+
+        // all the message sending out are enqueued into a Blocking Queue in a child thread 
         public MainWindow()
         {
             InitializeComponent();
@@ -43,6 +54,7 @@ namespace ChattingClient
             msgOutThrd.Start();
         }
 
+        // this child thread dequeue message and post message to server 
         public void MsgOutThreadProc()
         {
             while (true)
@@ -54,6 +66,7 @@ namespace ChattingClient
             }
         }
 
+        // Incoming message will be displayed on the UI 
         public void TakeMessage(string message, string userName, bool isPrivate)
         {
             if (isPrivate)
@@ -116,6 +129,7 @@ namespace ChattingClient
             TakeMessage(MessageTextBox.Text, "you", isPrivate);
         }
 
+        // Updated peerList will be displayed on UI with this function 
         public void DisplayOnlinePeerList(string userList)
         {
             TextDisplayTextBox_OnlinePeers.Text = userList;
@@ -123,6 +137,7 @@ namespace ChattingClient
             TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
+        // helper function used to create IP address and port with information extract from UI 
         private Tuple<string, int> buildIpAdrs(string ip, string port)
         {
             int portVal;
@@ -160,6 +175,7 @@ namespace ChattingClient
             }
         }
 
+        // MessageBox UI for session owner to make decision on join-session requests
         public bool isApproved(string userName)
         {
             string messageBoxText = String.Format("{0} wants to joint, approved?", userName);

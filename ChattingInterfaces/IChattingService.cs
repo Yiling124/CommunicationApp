@@ -1,4 +1,12 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements a Server interface exposed to client side 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;

@@ -1,4 +1,15 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements a TextMessage class that works closely with a generic BlockingQueue, 
+ *   the BlockingQue allows to enqueue and dequeue TextMessages 
+ *   
+ *   This class implements a IMessage interface, including all the required methods
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,6 +44,7 @@ namespace ChattingServer
             return this.TextSessionOwnerAdrs;
         }
 
+        // this implements an important functionality required by IMessage Interface
         public void Send(IClient receipient, bool isPrivate)
         {
             receipient.GetMessage(this.TextMessageContent, this.TextsenderName, isPrivate);
