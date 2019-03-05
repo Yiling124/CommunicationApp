@@ -1,4 +1,13 @@
-﻿using ChattingInterfaces;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements all the code related to UI controls, user will be able to interact with the application 
+ *   through this front end UI 
+ */
+
+using ChattingInterfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,6 +40,7 @@ namespace ChattingClient
         Thread msgOutThrd = null;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
 
+        // all the message sending out are enqueued into a Blocking Queue in a child thread
         public MainWindow()
         {
             InitializeComponent();
@@ -43,6 +53,7 @@ namespace ChattingClient
             msgOutThrd.Start();
         }
 
+        // this child thread dequeue message and post message to server 
         public void MsgOutThreadProc()
         {
             while (true)
@@ -54,6 +65,7 @@ namespace ChattingClient
             }
         }
 
+        // Incoming message will be displayed on the UI 
         public void TakeMessage(string message, string userName, bool isPrivate)
         {
             if (isPrivate)
@@ -116,6 +128,7 @@ namespace ChattingClient
             TakeMessage(MessageTextBox.Text, "you", isPrivate);
         }
 
+        // Updated peerList will be displayed on UI with this function 
         public void DisplayOnlinePeerList(string userList)
         {
             TextDisplayTextBox_OnlinePeers.Text = userList;
