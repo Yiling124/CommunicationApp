@@ -3,7 +3,7 @@
 //  Author:       YiLing Jiang                                              //
 /////////////////////////////////////////////////////////////////////////////
 /*
- *   This package implements all the code related to UI controls, user will be able to interact with the application 
+ *   This package implements all the code related to UI controls, users will be able to interact with the application 
  *   through this front end UI 
  */
 

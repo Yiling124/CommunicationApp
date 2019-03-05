@@ -1,9 +1,9 @@
-﻿/////////////////////////////////////////////////////////////////////////////                                     //
+﻿/////////////////////////////////////////////////////////////////////////////                                     
 //  Language:     C#                                                       //
-//  Author:       YiLing Jiang                                              //
+//  Author:       YiLing Jiang                                             //
 /////////////////////////////////////////////////////////////////////////////
 /*
- *   This package implements the Session Class that holds all the information about all users and owner
+ *   This package implements the Session Class that holds all the information about all users and owner of current session
  *   including their, ip, port, name etc 
  */
 
@@ -19,7 +19,7 @@ namespace ChattingServer
 {
     public class Session
     {
-        // each session will have a list of connected client and each session will be distinguished through session owner IP address
+        //each session will have a list of connected client and each session will be distinguished through session owner IP address
         private ConcurrentDictionary<Tuple<string, int>, ConnectedClient> clientList = new ConcurrentDictionary<Tuple<string, int>, ConnectedClient>();
         private Tuple<string, int> OwnerAddress;
 

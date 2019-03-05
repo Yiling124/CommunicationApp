@@ -1,13 +1,11 @@
-﻿/////////////////////////////////////////////////////////////////////////////                                     //
-//  Language:     C#                                                       //
+﻿/////////////////////////////////////////////////////////////////////////////                                     
 //  Author:       YiLing Jiang                                             //
 /////////////////////////////////////////////////////////////////////////////
 
 /*
  *   This package implements a TextMessage class that works closely with a generic BlockingQueue, 
  *   the BlockingQue allows to enqueue and dequeue TextMessages 
- *   
- *   This class implements a IMessage interface, including all the required methods
+ *   This class implements a IMessage interface, including all its required methods
  */
 
 using System;

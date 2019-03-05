@@ -1,4 +1,12 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                              //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package starts the server of the application 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;

@@ -1,6 +1,6 @@
 ﻿/////////////////////////////////////////////////////////////////////////////                                     //
 //  Language:     C#                                                       //
-//  Author:       YiLing Jiang                                              //
+//  Author:       YiLing Jiang                                             //
 /////////////////////////////////////////////////////////////////////////////
 /*
  *   This package implements the Connected Client class, it will include all the property required for a client connected to a chatting session
