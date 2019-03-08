@@ -14,4 +14,5 @@ namespace ChattingClient
     public partial class App : Application
     {
     }
+  
 }

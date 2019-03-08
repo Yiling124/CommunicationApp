@@ -1,6 +1,6 @@
 ﻿/////////////////////////////////////////////////////////////////////////////                                     //
 //  Language:     C#                                                       //
-//  Author:       YiLing Jiang                                              //
+//  Author:       YiLing Jiang                                             //
 /////////////////////////////////////////////////////////////////////////////
 /*
  *   This package implements all the code related to UI controls, users will be able to interact with the application 
@@ -30,20 +30,21 @@ using System.Threading;
 
 namespace ChattingClient
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
         Thread msgOutThrd = null;
+        public String userName = null;
+        public String sessionIp = null;
+        int sessionPort = 0;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
 
         // all the message sending out are enqueued into a Blocking Queue in a child thread
-        public MainWindow()
+        public MainWindow(String _userName, String _sessionIp, int _sessionPort, String peerList)
         {
             InitializeComponent();
+            SetLabels(_userName, _sessionIp, _sessionPort, peerList);
             _channelFactory = new DuplexChannelFactory<IChattingService>(new ClientCallback(), "ChattingServiceEndPoint");
             Server = _channelFactory.CreateChannel();
 
@@ -51,6 +52,16 @@ namespace ChattingClient
             msgOutThrd = new Thread(MsgOutThreadProc);
             msgOutThrd.IsBackground = true;
             msgOutThrd.Start();
+        }
+
+        private void SetLabels(String _userName, String _sessionIp, int _sessionPort, String peerList) {
+            this.userName = _userName;
+            this.sessionIp = _sessionIp;
+            this.sessionPort = _sessionPort;
+            WelcomeLabel.Content = "Welcome " + this.userName + "!";
+            SessionIpLabel.Content = "Session IP: " + this.sessionIp;
+            SessionPortLabel.Content = "Session Port: " + this.sessionPort;
+            DisplayOnlinePeerList(peerList);
         }
 
         // this child thread dequeue message and post message to server 
@@ -79,38 +90,39 @@ namespace ChattingClient
             receiverIpTextBox.Text = "";
             receiverPortTextBox.Text = "";
             MessageTextBox.Text = "";
-            TextDisplayTextBox.ScrollToEnd();
+            //TextDisplayTextBox.ScrollToEnd();
         }
 
 
-        private void CreateSessionButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (userNameTextBox.Text.Length == 0) return;
-            Tuple<string, string, int>  newSessionInfo = Server.CreateSession(userNameTextBox.Text);
-            string ClientListForDisplay = newSessionInfo.Item1;
+        //private void CreateSessionButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (userNameTextBox.Text.Length == 0) return;
+        //    Tuple<string, string, int>  newSessionInfo = Server.CreateSession(userNameTextBox.Text);
+        //    string ClientListForDisplay = newSessionInfo.Item1;
 
-            if (ClientListForDisplay != null)
-            {
-                WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
-                TextDisplayTextBox.IsEnabled = false;
-                DisplayOnlinePeerList(ClientListForDisplay);
-                MessageBox.Show("Your New Session Created " + userNameTextBox.Text);
+        //    if (ClientListForDisplay != null)
+        //    {
+        //        WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
+        //        TextDisplayTextBox.IsEnabled = false;
+        //        DisplayOnlinePeerList(ClientListForDisplay);
+        //        MessageBox.Show("Your New Session Created " + userNameTextBox.Text);
 
-                userNameTextBox.IsEnabled = false;
-                CreateSessionButton.IsEnabled = false;
+        //        userNameTextBox.IsEnabled = false;
+        //        CreateSessionButton.IsEnabled = false;
 
-                sessionOwnerPortTextBox.Text = newSessionInfo.Item3.ToString();
-                sessionOwnerIpTextBox.Text = newSessionInfo.Item2;
-                sessionOwnerPortTextBox.IsEnabled = false;
-                sessionOwnerIpTextBox.IsEnabled = false;
-                JoinSessionButton.IsEnabled = false;
-            } else{
-                MessageBox.Show("You already have a session created!");
-            }
-        }
+        //        sessionOwnerPortTextBox.Text = newSessionInfo.Item3.ToString();
+        //        sessionOwnerIpTextBox.Text = newSessionInfo.Item2;
+        //        sessionOwnerPortTextBox.IsEnabled = false;
+        //        sessionOwnerIpTextBox.IsEnabled = false;
+        //        JoinSessionButton.IsEnabled = false;
+        //    } else{
+        //        MessageBox.Show("You already have a session created!");
+        //    }
+        //}
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
+            
             if (MessageTextBox.Text.Length == 0) return;
 
             Tuple<string, int> privatReceipientAdrs = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
@@ -119,9 +131,8 @@ namespace ChattingClient
                 return;
             }
 
-            Tuple<string, int> ssOwnerAdrs = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
-            IDeliverable msgOut = new DeliverableTextMessage(MessageTextBox.Text, userNameTextBox.Text, privatReceipientAdrs, ssOwnerAdrs);
-
+            Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
+            IDeliverable msgOut = new DeliverableTextMessage(MessageTextBox.Text, this.userName, privatReceipientAdrs, ssOwnerAdrs);
             msgOutBlockingQ.enQ(msgOut);
 
             bool isPrivate = privatReceipientAdrs == null ? false : true;
@@ -133,11 +144,12 @@ namespace ChattingClient
         {
             TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.IsEnabled = false;
-            TextDisplayTextBox_OnlinePeers.ScrollToEnd();
+           // TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
         private Tuple<string, int> buildIpAdrs(string ip, string port)
         {
+
             int portVal;
             int.TryParse(port, out portVal);
             if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(port) || portVal == 0) return null;
@@ -147,30 +159,30 @@ namespace ChattingClient
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (sessionOwnerIpTextBox.Text.Length == 0 && sessionOwnerPortTextBox.Text.Length == 0) return;
-            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
+            if (this.sessionIp.Length == 0 && this.sessionPort == 0) return;
+            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(this.sessionIp, this.sessionPort.ToString());
             Server.Logout(sessionOwnerIpAddress);
         }
 
-        private void RequestJoin()
-        {
-            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
-            Tuple<string, string, int> peerList = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
-            if (peerList != null)
-            {
-                DisplayOnlinePeerList(peerList.Item1);
-                MessageBox.Show("Welcome to the chat session!");
-                userNameTextBox.IsEnabled = false;
-                sessionOwnerPortTextBox.IsEnabled = false;
-                sessionOwnerIpTextBox.IsEnabled = false;
-                JoinSessionButton.IsEnabled = false;
-            }
-            else {
-                MessageBox.Show("OOPS, Pls double check session address!");
-                sessionOwnerPortTextBox.Text = "";
-                sessionOwnerIpTextBox.Text = "";
-            }
-        }
+        //private void RequestJoin()
+        //{
+        //    Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
+        //    Tuple<string, string, int> peerList = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
+        //    if (peerList != null)
+        //    {
+        //        DisplayOnlinePeerList(peerList.Item1);
+        //        MessageBox.Show("Welcome to the chat session!");
+        //        userNameTextBox.IsEnabled = false;
+        //        sessionOwnerPortTextBox.IsEnabled = false;
+        //        sessionOwnerIpTextBox.IsEnabled = false;
+        //        JoinSessionButton.IsEnabled = false;
+        //    }
+        //    else {
+        //        MessageBox.Show("OOPS, Pls double check session address!");
+        //        sessionOwnerPortTextBox.Text = "";
+        //        sessionOwnerIpTextBox.Text = "";
+        //    }
+        //}
 
         public bool isApproved(string userName)
         {
@@ -191,12 +203,25 @@ namespace ChattingClient
             return false;
         }
 
-        private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
+        private void UMLTogle_Click(object sender, RoutedEventArgs e)
         {
-            if (userNameTextBox.Text.Length > 0 && sessionOwnerIpTextBox.Text.Length > 0 && sessionOwnerPortTextBox.Text.Length > 0)
+            var visibility = testTogleLabel.Visibility;
+
+            switch (visibility)
             {
-                RequestJoin();
+                case Visibility.Visible: testTogleLabel.Visibility = Visibility.Hidden; break;
+                case Visibility.Hidden: testTogleLabel.Visibility = Visibility.Collapsed; break;
+                case Visibility.Collapsed: testTogleLabel.Visibility = Visibility.Visible; break;
             }
         }
+
+
+        //private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (userNameTextBox.Text.Length > 0 && sessionOwnerIpTextBox.Text.Length > 0 && sessionOwnerPortTextBox.Text.Length > 0)
+        //    {
+        //        RequestJoin();
+        //    }
+        //}
     }
 }

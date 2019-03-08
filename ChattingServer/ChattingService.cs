@@ -169,13 +169,13 @@ namespace ChattingServer
             return SessionClientListForDisplay;
         }
 
-        public bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerIP)
+        public bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerAdrs)
         {
-            Session targetSession = sessionMg.getAllSessions()[sessionOwnerIP];
+            Session targetSession = sessionMg.getAllSessions()[sessionOwnerAdrs];
             if (targetSession == null) return false;
             if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
-            IMessage msgToSend = new TextMessage(message, userName, receiverIP, sessionOwnerIP);
+            IMessage msgToSend = new TextMessage(message, userName, receiverIP, sessionOwnerAdrs);
             messageBlockingQ.enQ(msgToSend);
             return true;
         }
@@ -184,6 +184,7 @@ namespace ChattingServer
         // when the last peer of a chat session left 
         public void Logout(Tuple<string, int> sessionOwnerIpAddress)
         {
+            Console.WriteLine("LOGOUT GOT CALLED");
             var currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();
             Session sessionFound = sessionMg.getAllSessions()[sessionOwnerIpAddress];
             ConcurrentDictionary<Tuple<string, int>, ConnectedClient> sessionClientList = sessionFound.getClientList();
