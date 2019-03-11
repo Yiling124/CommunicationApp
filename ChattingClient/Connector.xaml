@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="DragAndDrop.UsingConnector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DragAndDrop"
+             mc:Ignorable="d" 
+             d:DesignHeight="43" d:DesignWidth="81"
+             AllowDrop="True">
+    <Canvas Name="classCanvas"  Height="41" Width="79" Panel.ZIndex="-1">
+        <Line
+     X1="0" Y1="20"
+     X2="80" Y2="20"
+     Stroke="Black"
+     StrokeThickness="2"/>
+
+        <Line
+    X1="60" Y1="0"
+    X2="80" Y2="20"
+    Stroke="Black"
+    StrokeThickness="2" />
+
+        <Line
+    X1="60" Y1="40"
+    X2="80" Y2="20"
+    Stroke="Black"
+    StrokeThickness="2" Width="79" />
+
+    </Canvas>
+</UserControl>
+

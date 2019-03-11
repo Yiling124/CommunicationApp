@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ChattingClient"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local1="clr-namespace:DragAndDrop"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -13,58 +14,55 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="MainWindow" Height="450" Width="1062" Closing="Window_Closing">
-    <Grid Margin="0,0,-411,-184.5">
-        <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" Margin="522,354,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="SendMessageButton_Click"/>
-        <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="14,348,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="495"/>
-        <TextBox Name="TextDisplayTextBox" HorizontalAlignment="Left" Height="206" Margin="34,54,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="465" RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleY="-0.122"/>
-                    <RotateTransform/>
-                    <TranslateTransform Y="-0.498"/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label Name="WelcomeLabel" Content="Welcome   " HorizontalAlignment="Left" Margin="39,27,0,0" VerticalAlignment="Top" Width="179"/>
-        <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Left" Height="328" Margin="752,81,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="289" RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleY="-0.122"/>
-                    <RotateTransform/>
-                    <TranslateTransform Y="-0.498"/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label x:Name="Connected_Client_Label" Content="Connected Users In Session:" HorizontalAlignment="Left" Margin="794,44,0,0" VerticalAlignment="Top" Width="167" RenderTransformOrigin="0.5,0.5"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="34,299,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-1.353"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="1.476"/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="39,271,0,0" VerticalAlignment="Top" Width="179"/>
-        <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="281,276,0,0" VerticalAlignment="Top" Width="179"/>
-        <TextBox HorizontalAlignment="Left" Height="47" Margin="276,300,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-1.353"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="1.476"/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Label x:Name="SessionIpLabel" Content="Current Session IP: " HorizontalAlignment="Left" Margin="189,27,0,0" VerticalAlignment="Top" Width="179"/>
-        <Label x:Name="SessionPortLabel" Content="Current Session PORT: " HorizontalAlignment="Left" Margin="389,27,0,0" VerticalAlignment="Top" Width="179"/>
-        <Button x:Name="TogleButton" IsDefault="True" Content="UML Diagram" HorizontalAlignment="Left" Margin="609,68,0,0" VerticalAlignment="Top" Width="119" Height="42" Click="UMLTogle_Click"/>
-        <Label x:Name="testTogleLabel" Content="HELLLLLLLLLLLLLLLLLLO  " HorizontalAlignment="Left" Margin="593,27,0,0" VerticalAlignment="Top" Width="179"/>
+        Title="MainWindow" Height="800" Width="1300" Closing="Window_Closing">
+    <Grid HorizontalAlignment="Left" ShowGridLines="True">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <Canvas Grid.Column="0" Grid.ColumnSpan="5">
+            <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SendMessageButton_Click" Canvas.Left="446" Canvas.Top="663"/>
+            <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="14,657,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="429"/>
+            <TextBox Name="TextDisplayTextBox" Height="386" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Canvas.Left="34" Canvas.Top="89" Width="203"/>
+            <Label Name="WelcomeLabel" Content="Welcome   " HorizontalAlignment="Left" Margin="33,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
+            <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Right" Height="430" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="206" RenderTransformOrigin="0.5,0.5" Canvas.Left="313" Canvas.Top="73"/>
+            <TextBox HorizontalAlignment="Left" Height="28" Margin="34,579,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
+            </TextBox>
+            <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="38,555,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
+            <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="37,615,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
+            <TextBox HorizontalAlignment="Left" Height="33" Margin="35,634,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
+            </TextBox>
+            <Label x:Name="SessionIpLabel" Content="Current Session IP: " HorizontalAlignment="Left" Margin="153,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
+            <Label x:Name="SessionPortLabel" Content="Current Session PORT: " HorizontalAlignment="Left" Margin="350,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
+            <Button x:Name="TogleButton" IsDefault="True" Content="UML Diagram" HorizontalAlignment="Left" VerticalAlignment="Top" Width="25" Height="313" Click="UMLTogle_Click" Canvas.Left="546" Canvas.Top="142" RenderTransformOrigin="0.5,0.5">
+                <Button.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform AngleY="1.909"/>
+                        <RotateTransform/>
+                        <TranslateTransform Y="-1.967"/>
+                    </TransformGroup>
+                </Button.RenderTransform>
+            </Button>
+        </Canvas>
+
+        <StackPanel x:Name="ULMelem" Background="AliceBlue" Grid.Column="2" Margin="574,0,-748,0.5" >
+            <local1:Rectangle Margin="2" />
+            <local1:UsingConnector/>
+            <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Margin="0,0,28,0"/>
+        </StackPanel>
+
+
+        <Canvas Name="dropPanel"
+           Margin="753,0,-1297,0.5"
+            Grid.Column="2"
+            Background="LightGray" 
+            AllowDrop="True"
+            DragOver="panel_DragOver"
+            Drop="panel_Drop"
+        />
+        <Button x:Name="SaveUMLButton" IsDefault="True" Content="Save UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SaveUMLButton_Click" Grid.Column="2" Margin="601,661,-721,0"/>
     </Grid>
 </Window>

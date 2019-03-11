@@ -26,7 +26,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BlockingQueue;
 using System.Threading;
-
+using DragAndDrop;
+using Rectangle = DragAndDrop.Rectangle;
+using System.Windows.Markup;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace ChattingClient
 {
@@ -39,6 +43,7 @@ namespace ChattingClient
         public String sessionIp = null;
         int sessionPort = 0;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
+        String path = "";
 
         // all the message sending out are enqueued into a Blocking Queue in a child thread
         public MainWindow(String _userName, String _sessionIp, int _sessionPort, String peerList)
@@ -164,26 +169,6 @@ namespace ChattingClient
             Server.Logout(sessionOwnerIpAddress);
         }
 
-        //private void RequestJoin()
-        //{
-        //    Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(sessionOwnerIpTextBox.Text, sessionOwnerPortTextBox.Text);
-        //    Tuple<string, string, int> peerList = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
-        //    if (peerList != null)
-        //    {
-        //        DisplayOnlinePeerList(peerList.Item1);
-        //        MessageBox.Show("Welcome to the chat session!");
-        //        userNameTextBox.IsEnabled = false;
-        //        sessionOwnerPortTextBox.IsEnabled = false;
-        //        sessionOwnerIpTextBox.IsEnabled = false;
-        //        JoinSessionButton.IsEnabled = false;
-        //    }
-        //    else {
-        //        MessageBox.Show("OOPS, Pls double check session address!");
-        //        sessionOwnerPortTextBox.Text = "";
-        //        sessionOwnerIpTextBox.Text = "";
-        //    }
-        //}
-
         public bool isApproved(string userName)
         {
             string messageBoxText = String.Format("{0} wants to joint, approved?", userName);
@@ -203,25 +188,150 @@ namespace ChattingClient
             return false;
         }
 
-        private void UMLTogle_Click(object sender, RoutedEventArgs e)
+        private void panel_DragOver(object sender, DragEventArgs e)
         {
-            var visibility = testTogleLabel.Visibility;
-
-            switch (visibility)
+            if (e.Data.GetDataPresent("Object"))
             {
-                case Visibility.Visible: testTogleLabel.Visibility = Visibility.Hidden; break;
-                case Visibility.Hidden: testTogleLabel.Visibility = Visibility.Collapsed; break;
-                case Visibility.Collapsed: testTogleLabel.Visibility = Visibility.Visible; break;
+                // These Effects values are used in the drag source's
+                // GiveFeedback event handler to determine which cursor to display.
+                if (e.KeyStates == DragDropKeyStates.ControlKey)
+                {
+                    e.Effects = DragDropEffects.Copy;
+                }
+                else
+                {
+                    e.Effects = DragDropEffects.Move;
+                }
             }
         }
 
+        private void panel_Drop(object sender, DragEventArgs e)
+        {
+            // If an element in the panel has already handled the drop,
+            // the panel should not also handle it.
+            if (e.Handled == false)
+            {
+                Panel _panel = (Panel)sender;
+                UIElement _element = (UIElement)e.Data.GetData("Object");
+                Point dropPoint = e.GetPosition(this.dropPanel);
+                MessageBox.Show(dropPoint.X + "-" + dropPoint.Y);
+                if (_panel != null && _element != null)
+                {
+                    // Get the panel that the element currently belongs to,
+                    // then remove it from that panel and add it the Children of
+                    // the panel that its been dropped on.
+                    Panel _parent = (Panel)VisualTreeHelper.GetParent(_element);
 
-        //private void JoinSessionButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (userNameTextBox.Text.Length > 0 && sessionOwnerIpTextBox.Text.Length > 0 && sessionOwnerPortTextBox.Text.Length > 0)
-        //    {
-        //        RequestJoin();
-        //    }
-        //}
-    }
+                    if (_parent != null)
+                    {
+                        if (e.KeyStates == DragDropKeyStates.ControlKey &&
+                            e.AllowedEffects.HasFlag(DragDropEffects.Copy))
+                        {
+                            if (_element is Rectangle)
+                            {
+                                Rectangle _rectangle = new Rectangle((Rectangle)_element);
+                                _panel.Children.Add(_rectangle);
+                                Canvas.SetLeft(_rectangle, dropPoint.X);
+                                Canvas.SetTop(_rectangle, dropPoint.Y);
+                            }
+                            else
+                            {
+                                UsingConnector _uc = new UsingConnector((UsingConnector)_element);
+                                _panel.Children.Add(_uc);
+                                Canvas.SetLeft(_uc, dropPoint.X);
+                                Canvas.SetTop(_uc, dropPoint.Y);
+                            }
+                            // set the value to return to the DoDragDrop call
+                            e.Effects = DragDropEffects.Copy;
+                        }
+                        else if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
+                        {
+                            _parent.Children.Remove(_element);
+                            _panel.Children.Add(_element);
+                            Canvas.SetLeft(_element, dropPoint.X);
+                            Canvas.SetTop(_element, dropPoint.Y);
+                            // set the value to return to the DoDragDrop call
+                            e.Effects = DragDropEffects.Move;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void UMLTogle_Click(object sender, RoutedEventArgs e)
+        {
+            var visibility = ULMelem.Visibility;
+
+            switch (visibility)
+            {
+                case Visibility.Visible: ULMelem.Visibility = Visibility.Collapsed; break;
+                case Visibility.Collapsed: ULMelem.Visibility = Visibility.Visible; break;
+            }
+        }
+
+        private void TextDisplayTextBox_OnlinePeers_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Rectangle_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveUMLButton_Click(object sender, RoutedEventArgs e)
+        {
+            SerializeToXML(this.dropPanel);
+        }
+
+        private void SerializeToXML(Canvas canvas)
+        {
+            //source file 
+            string fileName = System.IO.Path.GetTempFileName();
+            string mystrXAML = XamlWriter.Save(canvas);
+            FileStream filestream = File.Create(fileName);
+            StreamWriter streamwriter = new StreamWriter(filestream);
+            streamwriter.Write(mystrXAML);
+            streamwriter.Close();
+            filestream.Close();
+
+            //dest file
+            string destFileName = System.IO.Path.GetRandomFileName() + ".xml";
+            string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+            destPath = System.IO.Path.Combine(destPath, destFileName);
+            this.path = destPath;
+
+            if (!System.IO.File.Exists(destPath))
+            {
+                File.Move(fileName, destPath);
+                MessageBox.Show("destPath:" + destPath);
+            }
+            else
+            {
+                MessageBox.Show("Failed to Save UML, Please Retry");
+                return;
+            }
+        }
+
+        // https://docs.microsoft.com/en-us/dotnet/api/system.xml.serialization.xmlserializer.deserialize?view=netframework-4.7.2
+
+        private void DeserializeXML(string filename) {
+            XmlSerializer serializer = new XmlSerializer(typeof(Canvas));
+
+            Canvas deseriallizedCanvas;
+
+            using (Stream reader = new FileStream(filename, FileMode.Open))
+            {
+                MessageBox.Show("reader got called");
+                deseriallizedCanvas = (Canvas)serializer.Deserialize(reader);
+            }
+            MessageBox.Show("canvas Background: " + deseriallizedCanvas.Background);
+            this.dropPanel = deseriallizedCanvas;
+        }
+
+        private void LoadUMLButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeserializeXML(this.path);
+        }
+    }   
 }
