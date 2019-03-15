@@ -31,6 +31,7 @@ using Rectangle = DragAndDrop.Rectangle;
 using System.Windows.Markup;
 using System.IO;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace ChattingClient
 {
@@ -44,6 +45,7 @@ namespace ChattingClient
         int sessionPort = 0;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
         String path = "";
+        public CanvasContainer cvContainer = new CanvasContainer();
 
         // all the message sending out are enqueued into a Blocking Queue in a child thread
         public MainWindow(String _userName, String _sessionIp, int _sessionPort, String peerList)
@@ -215,6 +217,7 @@ namespace ChattingClient
                 UIElement _element = (UIElement)e.Data.GetData("Object");
                 Point dropPoint = e.GetPosition(this.dropPanel);
                 MessageBox.Show(dropPoint.X + "-" + dropPoint.Y);
+
                 if (_panel != null && _element != null)
                 {
                     // Get the panel that the element currently belongs to,
@@ -222,8 +225,22 @@ namespace ChattingClient
                     // the panel that its been dropped on.
                     Panel _parent = (Panel)VisualTreeHelper.GetParent(_element);
 
+                    ShapeType st;
+                    String color;
+                    if (_element is Rectangle)
+                    {
+                        st = ShapeType.Rectangle;
+                        color = "blue";
+                    }
+                    else
+                    {
+                        st = ShapeType.UsingConnector;
+                        color = "black";
+                    }
+
                     if (_parent != null)
                     {
+                        UMLShape newShape = new UMLShape(st, Stopwatch.GetTimestamp(), color, dropPoint.X, dropPoint.Y);
                         if (e.KeyStates == DragDropKeyStates.ControlKey &&
                             e.AllowedEffects.HasFlag(DragDropEffects.Copy))
                         {
@@ -231,15 +248,17 @@ namespace ChattingClient
                             {
                                 Rectangle _rectangle = new Rectangle((Rectangle)_element);
                                 _panel.Children.Add(_rectangle);
-                                Canvas.SetLeft(_rectangle, dropPoint.X);
-                                Canvas.SetTop(_rectangle, dropPoint.Y);
+                                Canvas.SetLeft(_rectangle, dropPoint.Y);
+                                Canvas.SetTop(_rectangle, dropPoint.X);
+                                cvContainer.AddShape(newShape);
                             }
                             else
                             {
                                 UsingConnector _uc = new UsingConnector((UsingConnector)_element);
                                 _panel.Children.Add(_uc);
-                                Canvas.SetLeft(_uc, dropPoint.X);
-                                Canvas.SetTop(_uc, dropPoint.Y);
+                                Canvas.SetLeft(_uc, dropPoint.Y);
+                                Canvas.SetTop(_uc, dropPoint.X);
+                                cvContainer.AddShape(newShape);
                             }
                             // set the value to return to the DoDragDrop call
                             e.Effects = DragDropEffects.Copy;
@@ -248,8 +267,9 @@ namespace ChattingClient
                         {
                             _parent.Children.Remove(_element);
                             _panel.Children.Add(_element);
-                            Canvas.SetLeft(_element, dropPoint.X);
-                            Canvas.SetTop(_element, dropPoint.Y);
+                            Canvas.SetLeft(_element, dropPoint.Y);
+                            Canvas.SetTop(_element, dropPoint.X);
+                            cvContainer.UpdateShape(newShape);
                             // set the value to return to the DoDragDrop call
                             e.Effects = DragDropEffects.Move;
                         }
@@ -281,20 +301,19 @@ namespace ChattingClient
 
         private void SaveUMLButton_Click(object sender, RoutedEventArgs e)
         {
-            SerializeToXML(this.dropPanel);
+            MessageBox.Show("got called");
+            SerializeToXML(this.cvContainer.ShapeList);
         }
 
-        private void SerializeToXML(Canvas canvas)
+        private void SerializeToXML(List<UMLShape> shapeList)
         {
             //source file 
-            string fileName = System.IO.Path.GetTempFileName();
-            string mystrXAML = XamlWriter.Save(canvas);
-            FileStream filestream = File.Create(fileName);
-            StreamWriter streamwriter = new StreamWriter(filestream);
-            streamwriter.Write(mystrXAML);
-            streamwriter.Close();
-            filestream.Close();
-
+            string fileName = System.IO.Path.GetTempFileName() + ".xml";
+            XmlSerializer serializer = new XmlSerializer(typeof(List<UMLShape>));
+            TextWriter writer = new StreamWriter(fileName);
+            serializer.Serialize(writer, shapeList);
+            writer.Close();
+            
             //dest file
             string destFileName = System.IO.Path.GetRandomFileName() + ".xml";
             string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
@@ -304,7 +323,6 @@ namespace ChattingClient
             if (!System.IO.File.Exists(destPath))
             {
                 File.Move(fileName, destPath);
-                MessageBox.Show("destPath:" + destPath);
             }
             else
             {
@@ -313,25 +331,48 @@ namespace ChattingClient
             }
         }
 
-        // https://docs.microsoft.com/en-us/dotnet/api/system.xml.serialization.xmlserializer.deserialize?view=netframework-4.7.2
-
         private void DeserializeXML(string filename) {
-            XmlSerializer serializer = new XmlSerializer(typeof(Canvas));
-
-            Canvas deseriallizedCanvas;
+            
+            XmlSerializer serializer = new XmlSerializer(typeof(List<UMLShape>));
 
             using (Stream reader = new FileStream(filename, FileMode.Open))
             {
-                MessageBox.Show("reader got called");
-                deseriallizedCanvas = (Canvas)serializer.Deserialize(reader);
+                List<UMLShape> shapeList = (List<UMLShape>)serializer.Deserialize(reader);
+                foreach (UMLShape ushape in shapeList) {
+                    if (ushape.ShpType == ShapeType.UsingConnector)
+                    {
+                        UsingConnector uc = new UsingConnector();
+                        this.dropPanel.Children.Add(uc);
+                        Canvas.SetLeft(uc, ushape.Left);
+                        Canvas.SetTop(uc, ushape.Top);
+                    }
+                    if (ushape.ShpType == ShapeType.Rectangle) {
+                        Rectangle rect = new Rectangle();
+                        this.dropPanel.Children.Add(rect);
+                        Canvas.SetLeft(rect, ushape.Left);
+                        Canvas.SetTop(rect, ushape.Top);
+                    } 
+                }
+                
             }
-            MessageBox.Show("canvas Background: " + deseriallizedCanvas.Background);
-            this.dropPanel = deseriallizedCanvas;
         }
 
         private void LoadUMLButton_Click(object sender, RoutedEventArgs e)
         {
             DeserializeXML(this.path);
+        }
+
+        private void ClearUMLButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.dropPanel.Children.Clear();
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            Rectangle rect = new Rectangle();
+            this.dropPanel.Children.Add(rect);
+            Canvas.SetTop(rect, 500);
+            Canvas.SetLeft(rect, 150);
         }
     }   
 }

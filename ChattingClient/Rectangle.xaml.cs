@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,18 +21,40 @@ namespace DragAndDrop
     /// </summary>
     public partial class Rectangle : UserControl
     {
-        private Brush _previousFill = null;
+        public Brush _previousFill = null;
+        long Id;
+        public double Top;
+        public double Left;
+        public double RecWidth;
+        public double RecHeight;
+        public Brush Fill;
+
         public Rectangle()
         {
             InitializeComponent();
+            long timeStamp = Stopwatch.GetTimestamp();
+            this.Id = timeStamp;
+        }
+
+        public Rectangle(double RecWidth, double RecHeight, double Top, double Left) {
+            this.Top = Top;
+            this.Left = Left;
+            this.RecWidth = RecWidth;
+            this.RecHeight = RecHeight;
         }
         public Rectangle(Rectangle r)
         {
             InitializeComponent();
-            this.rectangleUI.Height = r.rectangleUI.Height;
-            this.rectangleUI.Width = r.rectangleUI.Width;
-            this.rectangleUI.Fill = r.rectangleUI.Fill;
+            long timeStamp = Stopwatch.GetTimestamp();
+            this.RecHeight = r.rectangleUI.Height;
+            this.rectangleUI.Height = this.Height;
+            this.RecWidth = r.rectangleUI.Width;
+            this.rectangleUI.Width = this.Width;
+            BrushConverter converter = new BrushConverter();
+            this.Fill = (Brush)converter.ConvertFromString(r.rectangleUI.Fill.ToString());
+            this.rectangleUI.Fill = this.Fill;
         }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);

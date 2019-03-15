@@ -64,5 +64,7 @@
             Drop="panel_Drop"
         />
         <Button x:Name="SaveUMLButton" IsDefault="True" Content="Save UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SaveUMLButton_Click" Grid.Column="2" Margin="601,661,-721,0"/>
+        <Button x:Name="ClearUMLButton" IsDefault="True" Content="Clear UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="ClearUMLButton_Click" Grid.Column="2" Margin="601,594,-721,0"/>
+        <Button x:Name="TestButton" IsDefault="True" Content="Test Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="TestButton_Click" Grid.Column="2" Margin="601,528,-721,0"/>
     </Grid>
 </Window>

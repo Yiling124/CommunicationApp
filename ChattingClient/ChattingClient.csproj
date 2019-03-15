@@ -64,12 +64,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CanvasContainer.cs" />
     <Compile Include="Connector.xaml.cs">
       <DependentUpon>Connector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Rectangle.xaml.cs">
       <DependentUpon>Rectangle.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UMLShape.cs" />
     <Page Include="Connector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
