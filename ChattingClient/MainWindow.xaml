@@ -52,6 +52,7 @@
             <local1:Rectangle Margin="2" />
             <local1:UsingConnector/>
             <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Margin="0,0,28,0"/>
+            <TextBox Height="28" TextWrapping="Wrap" Text="" VerticalAlignment="Top" x:Name ="saveUMLTextBox"  RenderTransformOrigin="0.5,0.5"/>
         </StackPanel>
 
 

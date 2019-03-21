@@ -25,11 +25,12 @@ namespace DragAndDrop
             return newShape;
         }
 
-        public UMLShape UpdateShape(UMLShape updatedShape)
-        {
-            int index = this.ShapeList.FindIndex(elem => elem.ID == updatedShape.ID);
-            this.ShapeList[index] = updatedShape;
-            return updatedShape;
-        }
+        //public UMLShape UpdateShape(UMLShape updatedShape)
+        //{
+            
+        //    int index = this.ShapeList.FindIndex(elem => elem.ID == updatedShape.ID);
+        //    this.ShapeList[index] = updatedShape;
+        //    return updatedShape;
+        //}
     }
 }

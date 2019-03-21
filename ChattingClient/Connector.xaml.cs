@@ -17,6 +17,9 @@ namespace DragAndDrop
 {
     public partial class UsingConnector : UserControl
     {
+        public double left { get; set; }
+        public double top { get; set; }
+
         public UsingConnector()
         {
             InitializeComponent();

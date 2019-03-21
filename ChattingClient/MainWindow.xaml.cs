@@ -32,6 +32,7 @@ using System.Windows.Markup;
 using System.IO;
 using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace ChattingClient
 {
@@ -44,7 +45,6 @@ namespace ChattingClient
         public String sessionIp = null;
         int sessionPort = 0;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
-        String path = "";
         public CanvasContainer cvContainer = new CanvasContainer();
 
         // all the message sending out are enqueued into a Blocking Queue in a child thread
@@ -100,33 +100,6 @@ namespace ChattingClient
             //TextDisplayTextBox.ScrollToEnd();
         }
 
-
-        //private void CreateSessionButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (userNameTextBox.Text.Length == 0) return;
-        //    Tuple<string, string, int>  newSessionInfo = Server.CreateSession(userNameTextBox.Text);
-        //    string ClientListForDisplay = newSessionInfo.Item1;
-
-        //    if (ClientListForDisplay != null)
-        //    {
-        //        WelcomeLabel.Content = "welcome " + userNameTextBox.Text + "!";
-        //        TextDisplayTextBox.IsEnabled = false;
-        //        DisplayOnlinePeerList(ClientListForDisplay);
-        //        MessageBox.Show("Your New Session Created " + userNameTextBox.Text);
-
-        //        userNameTextBox.IsEnabled = false;
-        //        CreateSessionButton.IsEnabled = false;
-
-        //        sessionOwnerPortTextBox.Text = newSessionInfo.Item3.ToString();
-        //        sessionOwnerIpTextBox.Text = newSessionInfo.Item2;
-        //        sessionOwnerPortTextBox.IsEnabled = false;
-        //        sessionOwnerIpTextBox.IsEnabled = false;
-        //        JoinSessionButton.IsEnabled = false;
-        //    } else{
-        //        MessageBox.Show("You already have a session created!");
-        //    }
-        //}
-
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
             
@@ -173,7 +146,7 @@ namespace ChattingClient
 
         public bool isApproved(string userName)
         {
-            string messageBoxText = String.Format("{0} wants to joint, approved?", userName);
+            string messageBoxText = String.Format("{0} wants to joint, approve?", userName);
             string caption = "Join Session Request";
             MessageBoxButton button = MessageBoxButton.YesNo;
             MessageBoxImage icon = MessageBoxImage.Warning;
@@ -209,72 +182,108 @@ namespace ChattingClient
 
         private void panel_Drop(object sender, DragEventArgs e)
         {
-            // If an element in the panel has already handled the drop,
-            // the panel should not also handle it.
             if (e.Handled == false)
             {
                 Panel _panel = (Panel)sender;
                 UIElement _element = (UIElement)e.Data.GetData("Object");
                 Point dropPoint = e.GetPosition(this.dropPanel);
-                MessageBox.Show(dropPoint.X + "-" + dropPoint.Y);
-
                 if (_panel != null && _element != null)
                 {
-                    // Get the panel that the element currently belongs to,
-                    // then remove it from that panel and add it the Children of
-                    // the panel that its been dropped on.
-                    Panel _parent = (Panel)VisualTreeHelper.GetParent(_element);
 
-                    ShapeType st;
-                    String color;
+                    Panel _parent = (Panel)VisualTreeHelper.GetParent(_element);
+                    ShapeType shapetype;
                     if (_element is Rectangle)
                     {
-                        st = ShapeType.Rectangle;
-                        color = "blue";
+                        shapetype = ShapeType.Rectangle;
                     }
-                    else
-                    {
-                        st = ShapeType.UsingConnector;
-                        color = "black";
+                    else {
+                        shapetype = ShapeType.UsingConnector;
                     }
-
+                   
+                    UMLShape newShape = new UMLShape(shapetype, dropPoint.Y, dropPoint.X);
                     if (_parent != null)
                     {
-                        UMLShape newShape = new UMLShape(st, Stopwatch.GetTimestamp(), color, dropPoint.X, dropPoint.Y);
                         if (e.KeyStates == DragDropKeyStates.ControlKey &&
                             e.AllowedEffects.HasFlag(DragDropEffects.Copy))
                         {
                             if (_element is Rectangle)
                             {
                                 Rectangle _rectangle = new Rectangle((Rectangle)_element);
+                                _rectangle.left = dropPoint.X;
+                                _rectangle.top = dropPoint.Y;
                                 _panel.Children.Add(_rectangle);
-                                Canvas.SetLeft(_rectangle, dropPoint.Y);
-                                Canvas.SetTop(_rectangle, dropPoint.X);
+                                Canvas.SetLeft(_rectangle, dropPoint.X);
+                                Canvas.SetTop(_rectangle, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
+                                this.updateCanvasItems();
                             }
                             else
                             {
                                 UsingConnector _uc = new UsingConnector((UsingConnector)_element);
+                                _uc.left = dropPoint.X;
+                                _uc.top = dropPoint.Y;
                                 _panel.Children.Add(_uc);
-                                Canvas.SetLeft(_uc, dropPoint.Y);
-                                Canvas.SetTop(_uc, dropPoint.X);
+                                Canvas.SetLeft(_uc, dropPoint.X);
+                                Canvas.SetTop(_uc, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
+                                this.updateCanvasItems();
                             }
                             // set the value to return to the DoDragDrop call
                             e.Effects = DragDropEffects.Copy;
                         }
                         else if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
                         {
-                            _parent.Children.Remove(_element);
-                            _panel.Children.Add(_element);
-                            Canvas.SetLeft(_element, dropPoint.Y);
-                            Canvas.SetTop(_element, dropPoint.X);
-                            cvContainer.UpdateShape(newShape);
-                            // set the value to return to the DoDragDrop call
+                            if (_element is Rectangle)
+                            {
+                                _parent.Children.Remove(_element);
+                                Rectangle _rectangle = new Rectangle((Rectangle)_element);
+                                _rectangle.left = dropPoint.X;
+                                _rectangle.top = dropPoint.Y;
+                                _panel.Children.Add(_rectangle);
+                                Canvas.SetLeft(_rectangle, dropPoint.X);
+                                Canvas.SetTop(_rectangle, dropPoint.Y);
+                                this.updateCanvasItems();
+                            }
+                            else
+                            {
+                                _parent.Children.Remove(_element);
+                                UsingConnector _updatedUc = new UsingConnector((UsingConnector)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
+                                this.updateCanvasItems();
+                            }
                             e.Effects = DragDropEffects.Move;
                         }
                     }
                 }
+            }
+        }
+
+        private void updateCanvasItems() {
+            this.cvContainer.ShapeList.Clear();
+            foreach (UIElement elem in this.dropPanel.Children) {
+                ShapeType shapetype;
+                double top = 0;
+                double left = 0;
+                if (elem is Rectangle)
+                {
+                    shapetype = ShapeType.Rectangle;
+                } else {
+                    shapetype = ShapeType.UsingConnector;
+                }
+
+                Type t = elem.GetType();
+                PropertyInfo[] pi = t.GetProperties();
+                foreach (PropertyInfo p in pi)
+                {
+                    if (p.Name.Equals("top")) top = (double)p.GetValue(elem);
+                    if (p.Name.Equals("left")) left = (double)p.GetValue(elem);
+                }
+                UMLShape newShape = new UMLShape(shapetype, top, left);
+                this.cvContainer.ShapeList.Add(newShape);
             }
         }
 
@@ -301,53 +310,66 @@ namespace ChattingClient
 
         private void SaveUMLButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("got called");
-            SerializeToXML(this.cvContainer.ShapeList);
+            if (this.saveUMLTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("please enter a file you want to load");
+                return;
+            }
+            SerializeToXML(this.cvContainer.ShapeList, this.saveUMLTextBox.Text);
         }
 
-        private void SerializeToXML(List<UMLShape> shapeList)
+        private void SerializeToXML(List<UMLShape> shapeList, string fileNm)
         {
             //source file 
-            string fileName = System.IO.Path.GetTempFileName() + ".xml";
+            string finalFileName = fileNm + ".xml";
+            string tempFileName = System.IO.Path.GetTempFileName() + ".xml";
             XmlSerializer serializer = new XmlSerializer(typeof(List<UMLShape>));
-            TextWriter writer = new StreamWriter(fileName);
+            TextWriter writer = new StreamWriter(tempFileName);
             serializer.Serialize(writer, shapeList);
             writer.Close();
             
             //dest file
-            string destFileName = System.IO.Path.GetRandomFileName() + ".xml";
             string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-            destPath = System.IO.Path.Combine(destPath, destFileName);
-            this.path = destPath;
-
+            destPath = System.IO.Path.Combine(destPath, finalFileName);
+           
             if (!System.IO.File.Exists(destPath))
             {
-                File.Move(fileName, destPath);
+                File.Move(tempFileName, destPath);
             }
             else
             {
                 MessageBox.Show("Failed to Save UML, Please Retry");
                 return;
             }
+            MessageBox.Show("Your UML was successfully saved to your Desktop!");
+            this.saveUMLTextBox.Text = "";
         }
 
         private void DeserializeXML(string filename) {
-            
+
+            string path = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+            string fileName = filename + ".xml";
+            string file = System.IO.Path.Combine(path, fileName);
+
             XmlSerializer serializer = new XmlSerializer(typeof(List<UMLShape>));
 
-            using (Stream reader = new FileStream(filename, FileMode.Open))
+            using (Stream reader = new FileStream(file, FileMode.Open))
             {
                 List<UMLShape> shapeList = (List<UMLShape>)serializer.Deserialize(reader);
                 foreach (UMLShape ushape in shapeList) {
                     if (ushape.ShpType == ShapeType.UsingConnector)
                     {
                         UsingConnector uc = new UsingConnector();
+                        uc.left = ushape.Left;
+                        uc.top = ushape.Top;
                         this.dropPanel.Children.Add(uc);
                         Canvas.SetLeft(uc, ushape.Left);
                         Canvas.SetTop(uc, ushape.Top);
                     }
                     if (ushape.ShpType == ShapeType.Rectangle) {
                         Rectangle rect = new Rectangle();
+                        rect.left = ushape.Left;
+                        rect.top = ushape.Top;
                         this.dropPanel.Children.Add(rect);
                         Canvas.SetLeft(rect, ushape.Left);
                         Canvas.SetTop(rect, ushape.Top);
@@ -355,16 +377,24 @@ namespace ChattingClient
                 }
                 
             }
+            this.updateCanvasItems();
+            this.saveUMLTextBox.Text = "";
         }
 
         private void LoadUMLButton_Click(object sender, RoutedEventArgs e)
         {
-            DeserializeXML(this.path);
+            if (this.saveUMLTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("please enter a file you want to load");
+                return;
+            }
+            DeserializeXML(this.saveUMLTextBox.Text);
         }
 
         private void ClearUMLButton_Click(object sender, RoutedEventArgs e)
         {
             this.dropPanel.Children.Clear();
+            cvContainer.ShapeList.Clear();
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
