@@ -41,10 +41,12 @@ namespace ChattingClient
         public static IChattingService Server;
         private static DuplexChannelFactory<IChattingService> _channelFactory;
         Thread msgOutThrd = null;
+        Thread msgInThrd = null;
         public String userName = null;
         public String sessionIp = null;
         int sessionPort = 0;
         BlockingQueue<IDeliverable> msgOutBlockingQ;
+        BlockingQueue<IDisplayable> msgInBlockingQ;
         public CanvasContainer cvContainer = new CanvasContainer();
 
         // all the message sending out are enqueued into a Blocking Queue in a child thread
@@ -59,16 +61,32 @@ namespace ChattingClient
             msgOutThrd = new Thread(MsgOutThreadProc);
             msgOutThrd.IsBackground = true;
             msgOutThrd.Start();
+
+            msgInBlockingQ = new BlockingQueue<IDisplayable>();
+            msgInThrd = new Thread(MsgInThreadProc);
+            msgInThrd.IsBackground = true;
+            msgInThrd.Start();
         }
 
-        private void SetLabels(String _userName, String _sessionIp, int _sessionPort, String peerList) {
-            this.userName = _userName;
-            this.sessionIp = _sessionIp;
-            this.sessionPort = _sessionPort;
-            WelcomeLabel.Content = "Welcome " + this.userName + "!";
-            SessionIpLabel.Content = "Session IP: " + this.sessionIp;
-            SessionPortLabel.Content = "Session Port: " + this.sessionPort;
-            DisplayOnlinePeerList(peerList);
+        public void MsgInThreadProc() {
+            Action act = () => { };
+            while (true)
+            {
+                IDisplayable newmsg = msgInBlockingQ.deQ();
+                act = () => {
+                    if (newmsg.getType() == MsgType.Text)
+                    {
+                        DisplayableTextMessage msg = (DisplayableTextMessage)newmsg;
+                        msg.Display();
+                    }
+                    else {
+                        DisplayableUMLmsg msg = (DisplayableUMLmsg)newmsg;
+                        msg.Display();
+                    }
+                };
+                string[] args = new string[] { };
+                Dispatcher.Invoke(act, args);
+            }
         }
 
         // this child thread dequeue message and post message to server 
@@ -79,25 +97,54 @@ namespace ChattingClient
                 IDeliverable msgForSendOut = msgOutBlockingQ.deQ();
                 bool isSent = msgForSendOut.SendOut(Server);
                 if (isSent) continue;
-                MessageBox.Show("Message failed.");
             }
         }
 
-        // Incoming message will be displayed on the UI 
-        public void TakeMessage(string message, string userName, bool isPrivate)
+        private void SetLabels(String _userName, String _sessionIp, int _sessionPort, String peerList)
         {
-            if (isPrivate)
+            this.userName = _userName;
+            this.sessionIp = _sessionIp;
+            this.sessionPort = _sessionPort;
+            WelcomeLabel.Content = "Welcome " + this.userName + "!";
+            SessionIpLabel.Content = "Session IP: " + this.sessionIp;
+            SessionPortLabel.Content = "Session Port: " + this.sessionPort;
+            DisplayOnlinePeerList(peerList);
+        }
+
+        public void DisplayUMLmsg(String msgContent) {
+            List<UMLShape> deserializedUML =  (List<UMLShape>)new XmlSerializer(typeof(List<UMLShape>)).Deserialize(new StringReader(msgContent));
+            DisplayUMLFromList(deserializedUML);
+            this.updateCanvasItems();
+        }
+
+        // Incoming message will be displayed on the UI 
+        public void DisplayTextMsg(DisplayableTextMessage newMsg) {
+            if (newMsg.isPrivate)
             {
-                TextDisplayTextBox.Text += "(Privte Msg) " + userName + ":" + message + "\n";
+                TextDisplayTextBox.Text += "(Privte Msg) " + newMsg.userName + ":" + newMsg.content + "\n";
             }
-            else {
-                TextDisplayTextBox.Text += userName + ":" + message + "\n";
+            else
+            {
+                TextDisplayTextBox.Text += newMsg.userName + ":" + newMsg.content + "\n";
             }
 
             receiverIpTextBox.Text = "";
             receiverPortTextBox.Text = "";
             MessageTextBox.Text = "";
             //TextDisplayTextBox.ScrollToEnd();
+        }
+
+        public void TakeMessage(MsgType msgType, string msg, string userName, bool isPrivate)
+        {
+            IDisplayable amsg;
+            if (msgType == MsgType.Text)
+            {
+                amsg = new DisplayableTextMessage(msg, isPrivate, userName);
+            }
+            else {
+                amsg = new DisplayableUMLmsg(msg, isPrivate, userName);
+            }
+            msgInBlockingQ.enQ(amsg);
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
@@ -112,11 +159,29 @@ namespace ChattingClient
             }
 
             Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
-            IDeliverable msgOut = new DeliverableTextMessage(MessageTextBox.Text, this.userName, privatReceipientAdrs, ssOwnerAdrs);
+            IDeliverable msgOut = new DeliverableTextMessage(MsgType.Text, MessageTextBox.Text, this.userName, privatReceipientAdrs, ssOwnerAdrs);
             msgOutBlockingQ.enQ(msgOut);
 
             bool isPrivate = privatReceipientAdrs == null ? false : true;
-            TakeMessage(MessageTextBox.Text, "you", isPrivate);
+            TakeMessage(MsgType.Text, MessageTextBox.Text, "you", isPrivate);
+        }
+
+        private string SerializeUMLmsg(List<UMLShape> shapeList)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(shapeList.GetType());
+            StringWriter stringWriter = new StringWriter();
+            xmlSerializer.Serialize(stringWriter, shapeList);
+            return stringWriter.ToString();
+
+        }
+
+
+        private void SendUML()
+        {
+            Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
+            string umlMsg = SerializeUMLmsg(this.cvContainer.ShapeList);
+            IDeliverable msgOut = new DeliverableTextMessage(MsgType.UML, umlMsg, this.userName, null, ssOwnerAdrs);
+            msgOutBlockingQ.enQ(msgOut);
         }
 
         // Updated peerList will be displayed on UI with this function 
@@ -215,7 +280,6 @@ namespace ChattingClient
                                 Canvas.SetLeft(_rectangle, dropPoint.X);
                                 Canvas.SetTop(_rectangle, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
-                                this.updateCanvasItems();
                             }
                             else
                             {
@@ -226,10 +290,11 @@ namespace ChattingClient
                                 Canvas.SetLeft(_uc, dropPoint.X);
                                 Canvas.SetTop(_uc, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
-                                this.updateCanvasItems();
                             }
-                            // set the value to return to the DoDragDrop call
+                            this.updateCanvasItems();
                             e.Effects = DragDropEffects.Copy;
+
+
                         }
                         else if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
                         {
@@ -260,6 +325,7 @@ namespace ChattingClient
                     }
                 }
             }
+            SendUML();
         }
 
         private void updateCanvasItems() {
@@ -296,16 +362,6 @@ namespace ChattingClient
                 case Visibility.Visible: ULMelem.Visibility = Visibility.Collapsed; break;
                 case Visibility.Collapsed: ULMelem.Visibility = Visibility.Visible; break;
             }
-        }
-
-        private void TextDisplayTextBox_OnlinePeers_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void Rectangle_Loaded(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void SaveUMLButton_Click(object sender, RoutedEventArgs e)
@@ -356,29 +412,36 @@ namespace ChattingClient
             using (Stream reader = new FileStream(file, FileMode.Open))
             {
                 List<UMLShape> shapeList = (List<UMLShape>)serializer.Deserialize(reader);
-                foreach (UMLShape ushape in shapeList) {
-                    if (ushape.ShpType == ShapeType.UsingConnector)
-                    {
-                        UsingConnector uc = new UsingConnector();
-                        uc.left = ushape.Left;
-                        uc.top = ushape.Top;
-                        this.dropPanel.Children.Add(uc);
-                        Canvas.SetLeft(uc, ushape.Left);
-                        Canvas.SetTop(uc, ushape.Top);
-                    }
-                    if (ushape.ShpType == ShapeType.Rectangle) {
-                        Rectangle rect = new Rectangle();
-                        rect.left = ushape.Left;
-                        rect.top = ushape.Top;
-                        this.dropPanel.Children.Add(rect);
-                        Canvas.SetLeft(rect, ushape.Left);
-                        Canvas.SetTop(rect, ushape.Top);
-                    } 
-                }
-                
+                DisplayUMLFromList(shapeList);
             }
             this.updateCanvasItems();
             this.saveUMLTextBox.Text = "";
+        }
+
+        private void DisplayUMLFromList(List<UMLShape> list)
+        {
+            this.dropPanel.Children.Clear();
+            foreach (UMLShape ushape in list)
+            {
+                if (ushape.ShpType == ShapeType.UsingConnector)
+                {
+                    UsingConnector uc = new UsingConnector();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
+                }
+                if (ushape.ShpType == ShapeType.Rectangle)
+                {
+                    Rectangle rect = new Rectangle();
+                    rect.left = ushape.Left;
+                    rect.top = ushape.Top;
+                    this.dropPanel.Children.Add(rect);
+                    Canvas.SetLeft(rect, ushape.Left);
+                    Canvas.SetTop(rect, ushape.Top);
+                }
+            }
         }
 
         private void LoadUMLButton_Click(object sender, RoutedEventArgs e)
@@ -389,12 +452,14 @@ namespace ChattingClient
                 return;
             }
             DeserializeXML(this.saveUMLTextBox.Text);
+            SendUML();
         }
 
         private void ClearUMLButton_Click(object sender, RoutedEventArgs e)
         {
             this.dropPanel.Children.Clear();
             cvContainer.ShapeList.Clear();
+            SendUML();
         }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)

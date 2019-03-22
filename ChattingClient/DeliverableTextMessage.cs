@@ -12,13 +12,15 @@ namespace ChattingClient
 {
     class DeliverableTextMessage : IDeliverable
     {
+        MsgType msgType;
         string textConent;
         string senderName;
         Tuple<string, int> receipientAdrs;
         Tuple<string, int> ssOwnerAdrs;
 
-        public DeliverableTextMessage(string textConent, string senderName, Tuple<string, int> receipientAdrs, Tuple<string, int> ssOwnerAdrs)
+        public DeliverableTextMessage(MsgType msgType, string textConent, string senderName, Tuple<string, int> receipientAdrs, Tuple<string, int> ssOwnerAdrs)
         {
+            this.msgType = msgType;
             this.textConent = textConent;
             this.senderName = senderName;
             this.receipientAdrs = receipientAdrs;
@@ -27,7 +29,7 @@ namespace ChattingClient
 
         public bool SendOut(IChattingService Server)
         {
-            return Server.SendTextMessage(this.textConent, this.senderName, this.receipientAdrs, this.ssOwnerAdrs);
+            return Server.SendTextMessage(this.msgType, this.textConent, this.senderName, this.receipientAdrs, this.ssOwnerAdrs);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace ChattingInterfaces
     public interface IClient
     {
         [OperationContract]
-        void GetMessage(string message, string userName, bool isPrivate);
+        void GetMessage(MsgType msgType, string message, string userName, bool isPrivate);
 
         [OperationContract]
         void GetPeerList(string clientListForDisplay);

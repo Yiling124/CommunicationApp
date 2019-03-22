@@ -20,13 +20,15 @@ namespace ChattingServer
 {
     public class TextMessage : IMessage
     {
+        public MsgType msgType { get; set; }
         public string TextMessageContent { get; set; }
         public string TextsenderName { get; set; }
         public Tuple<string, int> TextSessionOwnerAdrs { get; set; }
         public Tuple<string, int> TextReceiverAdrs { get; set; }
 
-        public TextMessage(string textConent, string sderName, Tuple<string, int> receiverIp, Tuple<string, int> ownerIp)
+        public TextMessage(MsgType msgType, string textConent, string sderName, Tuple<string, int> receiverIp, Tuple<string, int> ownerIp)
         {
+            this.msgType = msgType;
             this.TextMessageContent = textConent;
             this.TextsenderName = sderName;
             this.TextReceiverAdrs = receiverIp;
@@ -46,7 +48,9 @@ namespace ChattingServer
         // this implements an important functionality required by IMessage Interface
         public void Send(IClient receipient, bool isPrivate)
         {
-            receipient.GetMessage(this.TextMessageContent, this.TextsenderName, isPrivate);
+            Console.WriteLine("SEND GOT CALLEd");
+            receipient.GetMessage(this.msgType, this.TextMessageContent, this.TextsenderName, isPrivate);
+            Console.WriteLine("SEND END, clinet side GetMessage should receive msg");
         }
 
         public string GetSenderName()

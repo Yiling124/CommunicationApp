@@ -51,7 +51,6 @@ namespace ChattingServer
             while (true)
             {
                 IMessage msg = messageBlockingQ.deQ();
-
                 Session targetSession = sessionMg.getAllSessions()[msg.GetSessionOwnerAdrs()];
                 if (targetSession == null) continue;
                 ConnectedClient receipient;
@@ -63,6 +62,7 @@ namespace ChattingServer
                 }
                 foreach (KeyValuePair<Tuple<string, int>, ConnectedClient> entry in targetSession.getClientList())
                 {
+
                     if (!(entry.Value.UserName).Equals(msg.GetSenderName()))
                     {
                         msg.Send(entry.Value.connection, false);
@@ -169,13 +169,13 @@ namespace ChattingServer
             return SessionClientListForDisplay;
         }
 
-        public bool SendTextMessage(string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerAdrs)
+        public bool SendTextMessage(MsgType msgType, string message, string userName, Tuple<string, int> receiverIP, Tuple<string, int> sessionOwnerAdrs)
         {
             Session targetSession = sessionMg.getAllSessions()[sessionOwnerAdrs];
             if (targetSession == null) return false;
             if (receiverIP != null && !targetSession.getClientList().ContainsKey(receiverIP)) return false;
 
-            IMessage msgToSend = new TextMessage(message, userName, receiverIP, sessionOwnerAdrs);
+            IMessage msgToSend = new TextMessage(msgType, message, userName, receiverIP, sessionOwnerAdrs);
             messageBlockingQ.enQ(msgToSend);
             return true;
         }
@@ -184,7 +184,7 @@ namespace ChattingServer
         // when the last peer of a chat session left 
         public void Logout(Tuple<string, int> sessionOwnerIpAddress)
         {
-            Console.WriteLine("LOGOUT GOT CALLED");
+            Console.WriteLine("One user logged out!");
             var currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();
             Session sessionFound = sessionMg.getAllSessions()[sessionOwnerIpAddress];
             ConcurrentDictionary<Tuple<string, int>, ConnectedClient> sessionClientList = sessionFound.getClientList();

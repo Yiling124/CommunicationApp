@@ -58,7 +58,9 @@
     <Compile Include="IChattingService.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IDeliverable.cs" />
+    <Compile Include="IDisplayable.cs" />
     <Compile Include="IMessage.cs" />
+    <Compile Include="MsgType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
