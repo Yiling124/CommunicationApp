@@ -68,18 +68,21 @@ namespace ChattingClient
             msgInThrd.Start();
         }
 
-        public void MsgInThreadProc() {
+        public void MsgInThreadProc()
+        {
             Action act = () => { };
             while (true)
             {
                 IDisplayable newmsg = msgInBlockingQ.deQ();
-                act = () => {
+                act = () =>
+                {
                     if (newmsg.getType() == MsgType.Text)
                     {
                         DisplayableTextMessage msg = (DisplayableTextMessage)newmsg;
                         msg.Display();
                     }
-                    else {
+                    else
+                    {
                         DisplayableUMLmsg msg = (DisplayableUMLmsg)newmsg;
                         msg.Display();
                     }
@@ -111,14 +114,16 @@ namespace ChattingClient
             DisplayOnlinePeerList(peerList);
         }
 
-        public void DisplayUMLmsg(String msgContent) {
-            List<UMLShape> deserializedUML =  (List<UMLShape>)new XmlSerializer(typeof(List<UMLShape>)).Deserialize(new StringReader(msgContent));
+        public void DisplayUMLmsg(String msgContent)
+        {
+            List<UMLShape> deserializedUML = (List<UMLShape>)new XmlSerializer(typeof(List<UMLShape>)).Deserialize(new StringReader(msgContent));
             DisplayUMLFromList(deserializedUML);
             this.updateCanvasItems();
         }
 
         // Incoming message will be displayed on the UI 
-        public void DisplayTextMsg(DisplayableTextMessage newMsg) {
+        public void DisplayTextMsg(DisplayableTextMessage newMsg)
+        {
             if (newMsg.isPrivate)
             {
                 TextDisplayTextBox.Text += "(Privte Msg) " + newMsg.userName + ":" + newMsg.content + "\n";
@@ -141,7 +146,8 @@ namespace ChattingClient
             {
                 amsg = new DisplayableTextMessage(msg, isPrivate, userName);
             }
-            else {
+            else
+            {
                 amsg = new DisplayableUMLmsg(msg, isPrivate, userName);
             }
             msgInBlockingQ.enQ(amsg);
@@ -149,11 +155,12 @@ namespace ChattingClient
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
             if (MessageTextBox.Text.Length == 0) return;
 
             Tuple<string, int> privatReceipientAdrs = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
-            if ((receiverIpTextBox.Text.Length > 0 || receiverPortTextBox.Text.Length > 0) && privatReceipientAdrs == null) {
+            if ((receiverIpTextBox.Text.Length > 0 || receiverPortTextBox.Text.Length > 0) && privatReceipientAdrs == null)
+            {
                 MessageBox.Show("Please double check recepient address !");
                 return;
             }
@@ -189,7 +196,7 @@ namespace ChattingClient
         {
             TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.IsEnabled = false;
-           // TextDisplayTextBox_OnlinePeers.ScrollToEnd();
+            // TextDisplayTextBox_OnlinePeers.ScrollToEnd();
         }
 
         private Tuple<string, int> buildIpAdrs(string ip, string port)
@@ -261,10 +268,11 @@ namespace ChattingClient
                     {
                         shapetype = ShapeType.Rectangle;
                     }
-                    else {
+                    else
+                    {
                         shapetype = ShapeType.UsingConnector;
                     }
-                   
+
                     UMLShape newShape = new UMLShape(shapetype, dropPoint.Y, dropPoint.X);
                     if (_parent != null)
                     {
@@ -328,16 +336,20 @@ namespace ChattingClient
             SendUML();
         }
 
-        private void updateCanvasItems() {
+        private void updateCanvasItems()
+        {
             this.cvContainer.ShapeList.Clear();
-            foreach (UIElement elem in this.dropPanel.Children) {
+            foreach (UIElement elem in this.dropPanel.Children)
+            {
                 ShapeType shapetype;
                 double top = 0;
                 double left = 0;
                 if (elem is Rectangle)
                 {
                     shapetype = ShapeType.Rectangle;
-                } else {
+                }
+                else
+                {
                     shapetype = ShapeType.UsingConnector;
                 }
 
@@ -383,11 +395,11 @@ namespace ChattingClient
             TextWriter writer = new StreamWriter(tempFileName);
             serializer.Serialize(writer, shapeList);
             writer.Close();
-            
+
             //dest file
             string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             destPath = System.IO.Path.Combine(destPath, finalFileName);
-           
+
             if (!System.IO.File.Exists(destPath))
             {
                 File.Move(tempFileName, destPath);
@@ -401,7 +413,8 @@ namespace ChattingClient
             this.saveUMLTextBox.Text = "";
         }
 
-        private void DeserializeXML(string filename) {
+        private void DeserializeXML(string filename)
+        {
 
             string path = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
             string fileName = filename + ".xml";
@@ -469,5 +482,36 @@ namespace ChattingClient
             Canvas.SetTop(rect, 500);
             Canvas.SetLeft(rect, 150);
         }
-    }   
+
+        public void OnDragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = DragDropEffects.All;
+            e.Handled = true;
+        }
+
+        private void OnFileDrop(object sender, DragEventArgs e)
+        {
+            object text = e.Data.GetData(DataFormats.FileDrop);
+            TextBox tb = sender as TextBox;
+
+            if (tb != null)
+            {
+                string path = string.Format("{0}", ((string[])text)[0]);
+                tb.Text = string.Format("{0}", ((string[])text)[0]);
+                string content = System.IO.File.ReadAllText(path);
+                MessageBox.Show("CONTENT:" + content);
+            }
+
+            //if (tb != null)
+            //{
+            //    string path = string.Format("{0}", ((string[])text)[0]);
+            //    string content = System.IO.File.ReadAllText(path);
+
+            //    System.Console.WriteLine("Contents of WriteText.txt = {0}", text);
+            //}
+
+           
+        }
+    }
+
 }

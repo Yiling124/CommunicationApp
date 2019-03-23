@@ -24,7 +24,7 @@
 
         <Canvas Grid.Column="0" Grid.ColumnSpan="5">
             <Button Name="SendButton" IsDefault="True" Content="Send" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SendMessageButton_Click" Canvas.Left="446" Canvas.Top="663"/>
-            <TextBox Name ="MessageTextBox" HorizontalAlignment="Left" Height="58" Margin="14,657,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="429"/>
+            <TextBox Name ="MessageTextBox" AllowDrop="True" PreviewDragEnter="OnDragOver" PreviewDragOver="OnDragOver" PreviewDrop="OnFileDrop" HorizontalAlignment="Left" Height="58" Margin="14,657,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="429"/>
             <TextBox Name="TextDisplayTextBox" Height="386" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Canvas.Left="34" Canvas.Top="89" Width="203"/>
             <Label Name="WelcomeLabel" Content="Welcome   " HorizontalAlignment="Left" Margin="33,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
             <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Right" Height="430" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="206" RenderTransformOrigin="0.5,0.5" Canvas.Left="313" Canvas.Top="73"/>
@@ -66,6 +66,5 @@
         />
         <Button x:Name="SaveUMLButton" IsDefault="True" Content="Save UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SaveUMLButton_Click" Grid.Column="2" Margin="601,661,-721,0"/>
         <Button x:Name="ClearUMLButton" IsDefault="True" Content="Clear UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="ClearUMLButton_Click" Grid.Column="2" Margin="601,594,-721,0"/>
-        <Button x:Name="TestButton" IsDefault="True" Content="Test Button" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="TestButton_Click" Grid.Column="2" Margin="601,528,-721,0"/>
     </Grid>
 </Window>
