@@ -103,28 +103,40 @@ namespace ChattingClient
             DisplayOnlinePeerList(peerList);
         }
 
+        private bool toSaveFile()
+        {
+            string messageBoxText = "You received a file, save it ? ";
+            string caption = "Save File";
+            MessageBoxButton button = MessageBoxButton.YesNo;
+            MessageBoxImage icon = MessageBoxImage.Warning;
+
+            MessageBoxResult result = MessageBox.Show(messageBoxText, caption, button, icon);
+
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    return true;
+                case MessageBoxResult.No:
+                    return false;
+            }
+            return false;
+        }
+
         public void DisplayFileMsg(string msgContent)
         {
-            //MessageBox.Show("display in MainWindow got called");
-            //string fileName = Path.GetRandomFileName() + ".txt";
-            ////fileName = Path.ChangeExtension(fileName, ".txt");
-            //string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-            //string destFile = Path.Combine(destPath, fileName);
-            //MessageBox.Show("dest file: " + destFile);
-            //MessageBox.Show("msgConetn: " + msgContent);
-            //System.IO.File.WriteAllText(destFile, msgContent);
-            //this.MessageTextBox.Text = destFile;
-
-            System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();  
-            saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  //(*.txt, *.xml) | *.txt; *.xml;
-            saveFileDialog1.DefaultExt = ".xml";
-            saveFileDialog1.Title = "Save an File";  
-            //saveFileDialog1.ShowDialog();
-           
-            if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (toSaveFile() == true)
             {
-                string file = saveFileDialog1.FileName;
-                System.IO.File.WriteAllText(file, msgContent);
+                System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+                saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  //(*.txt, *.xml) | *.txt; *.xml;
+                saveFileDialog1.DefaultExt = ".xml";
+                saveFileDialog1.Title = "Save an File";
+                //saveFileDialog1.ShowDialog();
+
+                if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string file = saveFileDialog1.FileName;
+                    System.IO.File.WriteAllText(file, msgContent);
+                }
             }
         }
            
@@ -398,12 +410,16 @@ namespace ChattingClient
 
         private void SaveUMLButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.saveUMLTextBox.Text.Length == 0)
+            System.Windows.Forms.SaveFileDialog saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
+            saveFileDialog2.Filter = "UML Files *.xml| *.xml";  
+            saveFileDialog2.DefaultExt = ".xml";
+            saveFileDialog2.Title = "Save UML Diagram";
+
+            if (saveFileDialog2.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                MessageBox.Show("please enter a file you want to load");
-                return;
+                string file = saveFileDialog2.FileName;
+                SerializeToXML(this.cvContainer.ShapeList, file);
             }
-            SerializeToXML(this.cvContainer.ShapeList, this.saveUMLTextBox.Text);
         }
 
         private void SerializeToXML(List<UMLShape> shapeList, string fileNm)
@@ -430,25 +446,18 @@ namespace ChattingClient
                 return;
             }
             MessageBox.Show("Your UML was successfully saved to your Desktop!");
-            this.saveUMLTextBox.Text = "";
         }
 
         private void DeserializeXML(string filename)
         {
-
-            string path = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
-            string fileName = filename + ".xml";
-            string file = System.IO.Path.Combine(path, fileName);
-
             XmlSerializer serializer = new XmlSerializer(typeof(List<UMLShape>));
 
-            using (Stream reader = new FileStream(file, FileMode.Open))
+            using (Stream reader = new FileStream(filename, FileMode.Open))
             {
                 List<UMLShape> shapeList = (List<UMLShape>)serializer.Deserialize(reader);
                 DisplayUMLFromList(shapeList);
             }
             this.updateCanvasItems();
-            this.saveUMLTextBox.Text = "";
         }
 
         private void DisplayUMLFromList(List<UMLShape> list)
@@ -479,13 +488,21 @@ namespace ChattingClient
 
         private void LoadUMLButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.saveUMLTextBox.Text.Length == 0)
+            System.Windows.Forms.OpenFileDialog openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
+            openFileDialog3.InitialDirectory = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+            openFileDialog3.Filter = "UML file (*.xml)|*.xml";
+            openFileDialog3.FilterIndex = 2;
+            openFileDialog3.RestoreDirectory = true;
+            var filePath = string.Empty;
+
+            if (openFileDialog3.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                MessageBox.Show("please enter a file you want to load");
-                return;
+                filePath = openFileDialog3.FileName;
+                //Read the contents of the file into a stream
+                //var fileStream = openFileDialog3.OpenFile();
+                DeserializeXML(filePath);
+                SendUML();
             }
-            DeserializeXML(this.saveUMLTextBox.Text);
-            SendUML();
         }
 
         private void ClearUMLButton_Click(object sender, RoutedEventArgs e)
