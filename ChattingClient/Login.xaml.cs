@@ -48,7 +48,12 @@ namespace ChattingClient
 
         private void RequestJoin()
         {
-            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(ssIpTextBox.Text, ssPortBoxTextBox.Text);
+            // this is temp for dev
+            this.ssIpTextBox.Text = "172.16.132.128";
+            Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs("172.16.132.128", ssPortBoxTextBox.Text);
+
+            //The following line needs to be uncommented
+            //Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(ssIpTextBox.Text, ssPortBoxTextBox.Text);
             Tuple<string, string, int> newSSInfo = Server.RequestJoin(userNameTextBox.Text, sessionOwnerIpAddress);
             if (newSSInfo.Item1 != null)
             {

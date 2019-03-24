@@ -68,6 +68,7 @@
     <Compile Include="Connector.xaml.cs">
       <DependentUpon>Connector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DisplayableFileMsg.cs" />
     <Compile Include="DisplayableTextmsg.cs" />
     <Compile Include="DisplayableUMLmsg.cs" />
     <Compile Include="Rectangle.xaml.cs">

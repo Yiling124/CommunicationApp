@@ -33,6 +33,7 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Diagnostics;
 using System.Reflection;
+using Path = System.IO.Path;
 
 namespace ChattingClient
 {
@@ -74,19 +75,7 @@ namespace ChattingClient
             while (true)
             {
                 IDisplayable newmsg = msgInBlockingQ.deQ();
-                act = () =>
-                {
-                    if (newmsg.getType() == MsgType.Text)
-                    {
-                        DisplayableTextMessage msg = (DisplayableTextMessage)newmsg;
-                        msg.Display();
-                    }
-                    else
-                    {
-                        DisplayableUMLmsg msg = (DisplayableUMLmsg)newmsg;
-                        msg.Display();
-                    }
-                };
+                act = () =>newmsg.Display();
                 string[] args = new string[] { };
                 Dispatcher.Invoke(act, args);
             }
@@ -113,6 +102,32 @@ namespace ChattingClient
             SessionPortLabel.Content = "Session Port: " + this.sessionPort;
             DisplayOnlinePeerList(peerList);
         }
+
+        public void DisplayFileMsg(string msgContent)
+        {
+            //MessageBox.Show("display in MainWindow got called");
+            //string fileName = Path.GetRandomFileName() + ".txt";
+            ////fileName = Path.ChangeExtension(fileName, ".txt");
+            //string destPath = Environment.GetFolderPath(System.Environment.SpecialFolder.DesktopDirectory);
+            //string destFile = Path.Combine(destPath, fileName);
+            //MessageBox.Show("dest file: " + destFile);
+            //MessageBox.Show("msgConetn: " + msgContent);
+            //System.IO.File.WriteAllText(destFile, msgContent);
+            //this.MessageTextBox.Text = destFile;
+
+            System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();  
+            saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  //(*.txt, *.xml) | *.txt; *.xml;
+            saveFileDialog1.DefaultExt = ".xml";
+            saveFileDialog1.Title = "Save an File";  
+            //saveFileDialog1.ShowDialog();
+           
+            if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string file = saveFileDialog1.FileName;
+                System.IO.File.WriteAllText(file, msgContent);
+            }
+        }
+           
 
         public void DisplayUMLmsg(String msgContent)
         {
@@ -146,9 +161,14 @@ namespace ChattingClient
             {
                 amsg = new DisplayableTextMessage(msg, isPrivate, userName);
             }
-            else
+            else if (msgType == MsgType.UML)
             {
                 amsg = new DisplayableUMLmsg(msg, isPrivate, userName);
+            }
+            else {
+
+                // NEED TO BE CHANGED WHEN SEND PRIVATE FILE !
+                amsg = new DisplayableFileMsg(msg, false, userName);
             }
             msgInBlockingQ.enQ(amsg);
         }
@@ -498,19 +518,13 @@ namespace ChattingClient
             {
                 string path = string.Format("{0}", ((string[])text)[0]);
                 tb.Text = string.Format("{0}", ((string[])text)[0]);
+                TakeMessage(MsgType.Text, MessageTextBox.Text, "you", false);
+
                 string content = System.IO.File.ReadAllText(path);
-                MessageBox.Show("CONTENT:" + content);
+                Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
+                IDeliverable msgOut = new DeliverableTextMessage(MsgType.File, content, this.userName, null, ssOwnerAdrs);
+                msgOutBlockingQ.enQ(msgOut);
             }
-
-            //if (tb != null)
-            //{
-            //    string path = string.Format("{0}", ((string[])text)[0]);
-            //    string content = System.IO.File.ReadAllText(path);
-
-            //    System.Console.WriteLine("Contents of WriteText.txt = {0}", text);
-            //}
-
-           
         }
     }
 

@@ -30,10 +30,7 @@ namespace ChattingClient
 
         public bool Display()
         {
-            if (this.msgType == MsgType.UML)
-            {
-                ((MainWindow)Application.Current.MainWindow).DisplayUMLmsg(this.content);
-            }
+            ((MainWindow)Application.Current.MainWindow).DisplayUMLmsg(this.content);
             return true;
         }
     }

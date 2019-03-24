@@ -48,9 +48,7 @@ namespace ChattingServer
         // this implements an important functionality required by IMessage Interface
         public void Send(IClient receipient, bool isPrivate)
         {
-            Console.WriteLine("SEND GOT CALLEd");
             receipient.GetMessage(this.msgType, this.TextMessageContent, this.TextsenderName, isPrivate);
-            Console.WriteLine("SEND END, clinet side GetMessage should receive msg");
         }
 
         public string GetSenderName()

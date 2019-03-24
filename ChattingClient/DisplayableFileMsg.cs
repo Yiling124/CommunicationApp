@@ -1,35 +1,36 @@
-﻿using System;
+﻿using ChattingInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ChattingInterfaces;
 
 namespace ChattingClient
 {
-
-    public class DisplayableTextMessage : IDisplayable
+    class DisplayableFileMsg : IDisplayable
     {
         public MsgType msgType;
         public string content;
         public bool isPrivate;
         public string userName;
 
-        public DisplayableTextMessage(string content, bool isPrivate, string userName) {
-            this.msgType = MsgType.Text;
+        public DisplayableFileMsg(string content, bool isPrivate, string userName)
+        {
+            this.msgType = MsgType.File;
             this.content = content;
             this.isPrivate = isPrivate;
             this.userName = userName;
         }
 
-        public MsgType getType() {
+        public MsgType getType()
+        {
             return this.msgType;
         }
 
         public bool Display()
         {
-            ((MainWindow)Application.Current.MainWindow).DisplayTextMsg(this);
+            ((MainWindow)Application.Current.MainWindow).DisplayFileMsg(this.content);
             return true;
         }
     }
