@@ -13,7 +13,7 @@
 
         <TextBlock  FontSize="22" Name="className" Panel.ZIndex="1" HorizontalAlignment="Center" Foreground="#FFF8FCF7" >Hi</TextBlock>
         <Rectangle x:Name="rectangleUI" 
-         Height="100" Width="100"            
-         Fill="Blue"/>
+         Height="75" Width="100"            
+         Fill="Gray"/>
     </Grid>
 </UserControl>

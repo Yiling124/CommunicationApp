@@ -573,9 +573,16 @@ namespace ChattingClient
                 tb.Text = string.Format("{0}", ((string[])text)[0]);
                 TakeMessage(MsgType.Text, MessageTextBox.Text, "you", false);
 
+                Tuple<string, int> privatReceipientAdrs = buildIpAdrs(receiverIpTextBox.Text, receiverPortTextBox.Text);
+                if ((receiverIpTextBox.Text.Length > 0 || receiverPortTextBox.Text.Length > 0) && privatReceipientAdrs == null)
+                {
+                    MessageBox.Show("Please double check recepient address !");
+                    return;
+                }
+
                 string content = System.IO.File.ReadAllText(path);
                 Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
-                IDeliverable msgOut = new DeliverableTextMessage(MsgType.File, content, this.userName, null, ssOwnerAdrs);
+                IDeliverable msgOut = new DeliverableTextMessage(MsgType.File, content, this.userName, privatReceipientAdrs, ssOwnerAdrs);
                 msgOutBlockingQ.enQ(msgOut);
             }
         }

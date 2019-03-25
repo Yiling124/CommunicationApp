@@ -38,18 +38,18 @@
             <Label x:Name="SessionPortLabel" Content="Current Session PORT: " HorizontalAlignment="Left" Margin="350,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
         </Canvas>
 
-        <Canvas x:Name="ULMelem" Background="AliceBlue" Grid.Column="2" Margin="579,0,-753,0.5" >
+        <Canvas x:Name="ULMelem" Background="AliceBlue" Grid.Column="2" Margin="579,2,-753,-1.5" >
             <local1:Rectangle Margin="28,2" />
-            <local1:UsingConnector Canvas.Left="61" Canvas.Top="130" />
+            <local1:UsingConnector Canvas.Left="48" Canvas.Top="130" />
             <local1:ConnectorDown Canvas.Left="61" Canvas.Top="196" Height="72"/>
             <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Canvas.Left="27" Canvas.Top="524"/>
         </Canvas>
 
 
         <Canvas Name="dropPanel"
-           Margin="753,0,-1297,0.5"
+           Margin="753,3,-1297,-2.5"
             Grid.Column="2"
-            Background="LightGray" 
+            Background="LightSteelBlue" 
             AllowDrop="True"
             DragOver="panel_DragOver"
             Drop="panel_Drop"
