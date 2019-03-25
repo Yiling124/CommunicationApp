@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChattingInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,33 @@ namespace DragAndDrop
     /// </summary>
     public partial class ConnectorLeft : UserControl
     {
+        public double left { get; set; }
+        public double top { get; set; }
+
         public ConnectorLeft()
         {
             InitializeComponent();
+        }
+        public ConnectorLeft(ConnectorLeft cl)
+        {
+            InitializeComponent();
+            this.classCanvas.Height = cl.classCanvas.Height;
+            this.classCanvas.Width = cl.classCanvas.Width;
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                // Package the data.
+                DataObject data = new DataObject();
+                //data.SetData(DataFormats.StringFormat, classCanvas.Width.ToString());
+                //data.SetData("Double", classCanvas.Height);
+                data.SetData("Object", this);
+
+                // Inititate the drag-and-drop operation.
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
         }
     }
 }

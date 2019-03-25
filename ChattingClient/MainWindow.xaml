@@ -41,7 +41,8 @@
         <Canvas x:Name="ULMelem" Background="AliceBlue" Grid.Column="2" Margin="579,2,-753,-1.5" >
             <local1:Rectangle Margin="28,2" />
             <local1:UsingConnector Canvas.Left="48" Canvas.Top="130" />
-            <local1:ConnectorDown Canvas.Left="61" Canvas.Top="196" Height="72"/>
+            <local1:ConnectorLeft Canvas.Left="48" Canvas.Top="190" />
+            <local1:ConnectorDown Canvas.Left="61" Canvas.Top="250" />
             <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Canvas.Left="27" Canvas.Top="524"/>
         </Canvas>
 
