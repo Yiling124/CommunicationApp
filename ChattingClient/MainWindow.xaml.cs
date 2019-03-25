@@ -300,6 +300,10 @@ namespace ChattingClient
                     {
                         shapetype = ShapeType.Rectangle;
                     }
+                    else if (_element is ConnectorDown)
+                    {
+                        shapetype = ShapeType.ConnectorDown;
+                    }
                     else
                     {
                         shapetype = ShapeType.UsingConnector;
@@ -321,7 +325,7 @@ namespace ChattingClient
                                 Canvas.SetTop(_rectangle, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
                             }
-                            else
+                            else if (_element is UsingConnector)
                             {
                                 UsingConnector _uc = new UsingConnector((UsingConnector)_element);
                                 _uc.left = dropPoint.X;
@@ -331,6 +335,16 @@ namespace ChattingClient
                                 Canvas.SetTop(_uc, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
                             }
+                            else  {
+                                ConnectorDown _cd = new ConnectorDown((ConnectorDown)_element);
+                                _cd.left = dropPoint.X;
+                                _cd.top = dropPoint.Y;
+                                _panel.Children.Add(_cd);
+                                Canvas.SetLeft(_cd, dropPoint.X);
+                                Canvas.SetTop(_cd, dropPoint.Y);
+                                cvContainer.AddShape(newShape);
+                            }
+
                             this.updateCanvasItems();
                             e.Effects = DragDropEffects.Copy;
 
@@ -349,10 +363,20 @@ namespace ChattingClient
                                 Canvas.SetTop(_rectangle, dropPoint.Y);
                                 this.updateCanvasItems();
                             }
-                            else
+                            else if (_element is UsingConnector)
                             {
                                 _parent.Children.Remove(_element);
                                 UsingConnector _updatedUc = new UsingConnector((UsingConnector)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
+                                this.updateCanvasItems();
+                            }
+                            else {
+                                _parent.Children.Remove(_element);
+                                ConnectorDown _updatedUc = new ConnectorDown((ConnectorDown)_element);
                                 _updatedUc.left = dropPoint.X;
                                 _updatedUc.top = dropPoint.Y;
                                 _panel.Children.Add(_updatedUc);
@@ -380,9 +404,12 @@ namespace ChattingClient
                 {
                     shapetype = ShapeType.Rectangle;
                 }
-                else
+                else if (elem is UsingConnector)
                 {
                     shapetype = ShapeType.UsingConnector;
+                }
+                else {
+                    shapetype = ShapeType.ConnectorDown;
                 }
 
                 Type t = elem.GetType();
@@ -483,6 +510,15 @@ namespace ChattingClient
                     Canvas.SetLeft(rect, ushape.Left);
                     Canvas.SetTop(rect, ushape.Top);
                 }
+                if (ushape.ShpType == ShapeType.ConnectorDown)
+                {
+                    ConnectorDown uc = new ConnectorDown();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
+                }
             }
         }
 
@@ -543,6 +579,7 @@ namespace ChattingClient
                 msgOutBlockingQ.enQ(msgOut);
             }
         }
+
     }
 
 }

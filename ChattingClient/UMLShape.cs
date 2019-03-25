@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum ShapeType { Rectangle, UsingConnector };
+public enum ShapeType { Rectangle, UsingConnector, ConnectorDown };
 
 namespace DragAndDrop
 {

@@ -68,6 +68,9 @@
     <Compile Include="Connector.xaml.cs">
       <DependentUpon>Connector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectorDown.xaml.cs">
+      <DependentUpon>ConnectorDown.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DisplayableFileMsg.cs" />
     <Compile Include="DisplayableTextmsg.cs" />
     <Compile Include="DisplayableUMLmsg.cs" />
@@ -76,6 +79,10 @@
     </Compile>
     <Compile Include="UMLShape.cs" />
     <Page Include="Connector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
