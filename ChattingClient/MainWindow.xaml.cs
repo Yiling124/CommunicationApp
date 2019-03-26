@@ -309,6 +309,18 @@ namespace ChattingClient
                     {
                         shapetype = ShapeType.Rectangle;
                     }
+                    else if (_element is ConnectorDiaDown)
+                    {
+                        shapetype = ShapeType.ConnectorDiaDown;
+                    }
+                    else if (_element is ConnectorDiaUp)
+                    {
+                        shapetype = ShapeType.ConnectorDiaUp;
+                    }
+                    else if (_element is ConnectorDiaRight)
+                    {
+                        shapetype = ShapeType.ConnectorDiaRight;
+                    }
                     else if (_element is ConnectorTriDown)
                     {
                         shapetype = ShapeType.ConnectorTriDown;
@@ -371,6 +383,36 @@ namespace ChattingClient
                             else if (_element is ConnectorLeft)
                             {
                                 ConnectorLeft _cl = new ConnectorLeft((ConnectorLeft)_element);
+                                _cl.left = dropPoint.X;
+                                _cl.top = dropPoint.Y;
+                                _panel.Children.Add(_cl);
+                                Canvas.SetLeft(_cl, dropPoint.X);
+                                Canvas.SetTop(_cl, dropPoint.Y);
+                                cvContainer.AddShape(newShape);
+                            }
+                            else if (_element is ConnectorDiaRight)
+                            {
+                                ConnectorDiaRight _cl = new ConnectorDiaRight((ConnectorDiaRight)_element);
+                                _cl.left = dropPoint.X;
+                                _cl.top = dropPoint.Y;
+                                _panel.Children.Add(_cl);
+                                Canvas.SetLeft(_cl, dropPoint.X);
+                                Canvas.SetTop(_cl, dropPoint.Y);
+                                cvContainer.AddShape(newShape);
+                            }
+                            else if (_element is ConnectorDiaDown)
+                            {
+                                ConnectorDiaDown _cl = new ConnectorDiaDown((ConnectorDiaDown)_element);
+                                _cl.left = dropPoint.X;
+                                _cl.top = dropPoint.Y;
+                                _panel.Children.Add(_cl);
+                                Canvas.SetLeft(_cl, dropPoint.X);
+                                Canvas.SetTop(_cl, dropPoint.Y);
+                                cvContainer.AddShape(newShape);
+                            }
+                            else if (_element is ConnectorDiaUp)
+                            {
+                                ConnectorDiaUp _cl = new ConnectorDiaUp((ConnectorDiaUp)_element);
                                 _cl.left = dropPoint.X;
                                 _cl.top = dropPoint.Y;
                                 _panel.Children.Add(_cl);
@@ -473,6 +515,36 @@ namespace ChattingClient
                                 Canvas.SetLeft(_updatedUc, dropPoint.X);
                                 Canvas.SetTop(_updatedUc, dropPoint.Y);
                             }
+                            else if (_element is ConnectorDiaRight)
+                            {
+                                _parent.Children.Remove(_element);
+                                ConnectorDiaRight _updatedUc = new ConnectorDiaRight((ConnectorDiaRight)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
+                            }
+                            else if (_element is ConnectorDiaDown)
+                            {
+                                _parent.Children.Remove(_element);
+                                ConnectorDiaDown _updatedUc = new ConnectorDiaDown((ConnectorDiaDown)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
+                            }
+                            else if (_element is ConnectorDiaUp)
+                            {
+                                _parent.Children.Remove(_element);
+                                ConnectorDiaUp _updatedUc = new ConnectorDiaUp((ConnectorDiaUp)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
+                            }
                             else if (_element is ConnectorTriDown)
                             {
                                 _parent.Children.Remove(_element);
@@ -561,6 +633,18 @@ namespace ChattingClient
                 else if (elem is ConnectorTriDown)
                 {
                     shapetype = ShapeType.ConnectorTriDown;
+                }
+                else if (elem is ConnectorDiaRight)
+                {
+                    shapetype = ShapeType.ConnectorDiaRight;
+                }
+                else if (elem is ConnectorDiaDown)
+                {
+                    shapetype = ShapeType.ConnectorDiaDown;
+                }
+                else if (elem is ConnectorDiaUp)
+                {
+                    shapetype = ShapeType.ConnectorDiaUp;
                 }
                 else
                 {
@@ -699,6 +783,35 @@ namespace ChattingClient
                 if (ushape.ShpType == ShapeType.ConnectorTriLeft)
                 {
                     ConnectorTriLeft uc = new ConnectorTriLeft();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
+                }
+
+                if (ushape.ShpType == ShapeType.ConnectorDiaRight)
+                {
+                    ConnectorDiaRight uc = new ConnectorDiaRight();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
+                }
+
+                if (ushape.ShpType == ShapeType.ConnectorDiaDown)
+                {
+                    ConnectorDiaDown uc = new ConnectorDiaDown();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
+                }
+                if (ushape.ShpType == ShapeType.ConnectorDiaUp)
+                {
+                    ConnectorDiaUp uc = new ConnectorDiaUp();
                     uc.left = ushape.Left;
                     uc.top = ushape.Top;
                     this.dropPanel.Children.Add(uc);
