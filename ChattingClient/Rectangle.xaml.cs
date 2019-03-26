@@ -14,6 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ChattingInterfaces;
+using ChattingClient;
 
 namespace DragAndDrop
 {
@@ -36,6 +38,15 @@ namespace DragAndDrop
             this.rectangleUI.Height = r.rectangleUI.Height;
             this.rectangleUI.Width = r.rectangleUI.Width;
             this.rectangleUI.Fill = r.rectangleUI.Fill;
+            this.className.Text = r.className.Text;
+        }
+        public Rectangle(Rectangle r, string text)
+        {
+            InitializeComponent();
+            this.rectangleUI.Height = r.rectangleUI.Height;
+            this.rectangleUI.Width = r.rectangleUI.Width;
+            this.rectangleUI.Fill = r.rectangleUI.Fill;
+            this.className.Text = text;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -73,40 +84,6 @@ namespace DragAndDrop
             e.Handled = true;
         }
 
-        //protected override void OnDrop(DragEventArgs e)
-        //{
-        //    MessageBox.Show("onDrop got Triggered");
-
-        //    base.OnDrop(e);
-
-        //    // If the DataObject contains string data, extract it.
-        //    if (e.Data.GetDataPresent(DataFormats.StringFormat))
-        //    {
-        //        string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
-
-        //        // If the string can be converted into a Brush, 
-        //        // convert it and apply it to the ellipse.
-        //        BrushConverter converter = new BrushConverter();
-        //        if (converter.IsValid(dataString))
-        //        {
-        //            Brush newFill = (Brush)converter.ConvertFromString(dataString);
-        //            rectangleUI.Fill = newFill;
-
-        //            // Set Effects to notify the drag source what effect
-        //            // the drag-and-drop operation had.
-        //            // (Copy if CTRL is pressed; otherwise, move.)
-        //            if (e.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
-        //            {
-        //                e.Effects = DragDropEffects.Copy;
-        //            }
-        //            else
-        //            {
-        //                e.Effects = DragDropEffects.Move;
-        //            }
-        //        }
-        //    }
-        //    e.Handled = true;
-        //}
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
@@ -137,37 +114,11 @@ namespace DragAndDrop
             }
             e.Handled = true;
         }
-        //protected override void OnDragEnter(DragEventArgs e)
-        //{
-        //    base.OnDragEnter(e);
-        //    // Save the current Fill brush so that you can revert back to this value in DragLeave.
-        //    _previousFill = rectangleUI.Fill;
-
-        //    // If the DataObject contains string data, extract it.
-        //    if (e.Data.GetDataPresent(DataFormats.StringFormat))
-        //    {
-        //        string dataString = (string)e.Data.GetData(DataFormats.StringFormat);
-
-        //        // If the string can be converted into a Brush, convert it.
-        //        BrushConverter converter = new BrushConverter();
-        //        if (converter.IsValid(dataString))
-        //        {
-        //            Brush newFill = (Brush)converter.ConvertFromString(dataString.ToString());
-        //            rectangleUI.Fill = newFill;
-        //        }
-        //    }
-        //}
-        //protected override void OnDragLeave(DragEventArgs e)
-        //{
-        //    base.OnDragLeave(e);
-        //    // Undo the preview that was applied in OnDragEnter.
-        //    rectangleUI.Fill = _previousFill;
-        //}
 
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
-            className.Text = "Class1";
+            // className.Text = "Class1";
         }
     }
 }

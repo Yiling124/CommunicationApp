@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DragAndDrop"
              mc:Ignorable="d" 
-             Width="118.000" 
-             Height="118.000"
+             Width="80.000" 
+             Height="68.000"
              AllowDrop="True">
 
     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
-        <TextBlock  FontSize="22" Name="className" Panel.ZIndex="1" HorizontalAlignment="Center" Foreground="#FFF8FCF7" >Hi</TextBlock>
+        <TextBlock  FontSize="18" Name="className" Panel.ZIndex="1" HorizontalAlignment="Center" Foreground="#FFF8FCF7" >Class</TextBlock>
         <Rectangle x:Name="rectangleUI" 
-         Height="100" Width="100"            
+         Height="60" Width="75"            
          Fill="Gray"/>
     </Grid>
 </UserControl>

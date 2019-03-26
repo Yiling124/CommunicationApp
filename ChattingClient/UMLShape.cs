@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public enum ShapeType { Rectangle, UsingConnector, ConnectorDown, ConnectorLeft };
+public enum ShapeType { Rectangle, UsingConnector, ConnectorDown, ConnectorLeft, ConnectorUp };
 
 namespace DragAndDrop
 {
@@ -13,6 +13,7 @@ namespace DragAndDrop
         public ShapeType ShpType;
         public Double Top;
         public Double Left;
+        public string ClassName;
 
         public UMLShape() {}
 
@@ -20,6 +21,19 @@ namespace DragAndDrop
             this.ShpType = shapeType;
             this.Top = top;
             this.Left = left;
+            this.ClassName = "";
+        }
+
+        public UMLShape(ShapeType shapeType, string className, Double top, Double left)
+        {
+            this.ShpType = shapeType;
+            this.Top = top;
+            this.Left = left;
+            this.ClassName = className;
+        }
+
+        public void setClassName(string name) {
+            this.ClassName = name;
         }
     }
 }

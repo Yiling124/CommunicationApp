@@ -185,22 +185,29 @@ namespace ChattingServer
         public void Logout(Tuple<string, int> sessionOwnerIpAddress)
         {
             Console.WriteLine("One user logged out!");
-            var currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();
+            IClient currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();
             Session sessionFound = sessionMg.getAllSessions()[sessionOwnerIpAddress];
             ConcurrentDictionary<Tuple<string, int>, ConnectedClient> sessionClientList = sessionFound.getClientList();
             string clientListForDisplay = "";
 
+           
             foreach (var client in sessionClientList)
             {
+                Console.WriteLine("check: " + (client.Value.connection.Equals(currentConnectedConnection)).ToString());
                 if (client.Value.connection == currentConnectedConnection && sessionClientList.Count == 1)
                 {
                     Session ssRemoved;
                     sessionMg.getAllSessions().TryRemove(sessionOwnerIpAddress, out ssRemoved);
                     return;
-                } else if (client.Value.connection == currentConnectedConnection) {
+                } else if (client.Value.connection.Equals(currentConnectedConnection)) {
+                    Console.WriteLine("1");
                     ConnectedClient removedClient;
+                    Console.WriteLine("2");
                     sessionClientList.TryRemove(client.Value.IpAddress, out removedClient);
+                    Console.WriteLine("client got removed");
                     clientListForDisplay = BuildSessionStrClientList(sessionClientList);
+
+                    Console.WriteLine("ready to send list" + clientListForDisplay);
                     SendUpdatedClientList(clientListForDisplay, sessionClientList, null);
                     return;
                 }

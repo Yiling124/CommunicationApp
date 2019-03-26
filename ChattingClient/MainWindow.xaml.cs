@@ -37,6 +37,7 @@ using Path = System.IO.Path;
 
 namespace ChattingClient
 {
+
     public partial class MainWindow : Window
     {
         public static IChattingService Server;
@@ -105,7 +106,7 @@ namespace ChattingClient
 
         private bool toSaveFile()
         {
-            string messageBoxText = "You received a file, save it ? ";
+            string messageBoxText = this.userName + " You received a file, save it ? ";
             string caption = "Save File";
             MessageBoxButton button = MessageBoxButton.YesNo;
             MessageBoxImage icon = MessageBoxImage.Warning;
@@ -127,7 +128,7 @@ namespace ChattingClient
             if (toSaveFile() == true)
             {
                 System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-                saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  //(*.txt, *.xml) | *.txt; *.xml;
+                saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  
                 saveFileDialog1.DefaultExt = ".xml";
                 saveFileDialog1.Title = "Save an File";
                 //saveFileDialog1.ShowDialog();
@@ -226,6 +227,7 @@ namespace ChattingClient
         // Updated peerList will be displayed on UI with this function 
         public void DisplayOnlinePeerList(string userList)
         {
+            MessageBox.Show("frontEend DisplayPeerList got called");
             TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.IsEnabled = false;
             // TextDisplayTextBox_OnlinePeers.ScrollToEnd();
@@ -284,6 +286,14 @@ namespace ChattingClient
             }
         }
 
+        private void SetNewShape(ref UIElement shape, Panel panel, Point dropPoint, UMLShape newShape)
+        {
+            panel.Children.Add(shape);
+            Canvas.SetLeft(shape, dropPoint.X);
+            Canvas.SetTop(shape, dropPoint.Y);
+            cvContainer.AddShape(newShape);
+        }
+
         private void panel_Drop(object sender, DragEventArgs e)
         {
             if (e.Handled == false)
@@ -308,6 +318,10 @@ namespace ChattingClient
                     {
                         shapetype = ShapeType.ConnectorLeft;
                     }
+                    else if (_element is ConnectorUp)
+                    {
+                        shapetype = ShapeType.ConnectorUp;
+                    }
                     else
                     {
                         shapetype = ShapeType.UsingConnector;
@@ -321,9 +335,13 @@ namespace ChattingClient
                         {
                             if (_element is Rectangle)
                             {
-                                Rectangle _rectangle = new Rectangle((Rectangle)_element);
+                                Rectangle _rectangle = new Rectangle((Rectangle)_element, this.ClassNameTextBox.Text);
+                                newShape.setClassName(this.ClassNameTextBox.Text);
+                                this.ClassNameTextBox.Text = "";
                                 _rectangle.left = dropPoint.X;
                                 _rectangle.top = dropPoint.Y;
+                                // SetNewShape((UIElement)_rectangle, _panel, dropPoint, newShape);
+                                
                                 _panel.Children.Add(_rectangle);
                                 Canvas.SetLeft(_rectangle, dropPoint.X);
                                 Canvas.SetTop(_rectangle, dropPoint.Y);
@@ -349,6 +367,16 @@ namespace ChattingClient
                                 Canvas.SetTop(_cl, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
                             }
+                            else if (_element is ConnectorUp)
+                            {
+                                ConnectorUp _cl = new ConnectorUp((ConnectorUp)_element);
+                                _cl.left = dropPoint.X;
+                                _cl.top = dropPoint.Y;
+                                _panel.Children.Add(_cl);
+                                Canvas.SetLeft(_cl, dropPoint.X);
+                                Canvas.SetTop(_cl, dropPoint.Y);
+                                cvContainer.AddShape(newShape);
+                            }
                             else
                             {
                                 ConnectorDown _cd = new ConnectorDown((ConnectorDown)_element);
@@ -359,11 +387,8 @@ namespace ChattingClient
                                 Canvas.SetTop(_cd, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
                             }
-
                             this.updateCanvasItems();
                             e.Effects = DragDropEffects.Copy;
-
-
                         }
                         else if (e.AllowedEffects.HasFlag(DragDropEffects.Move))
                         {
@@ -376,7 +401,6 @@ namespace ChattingClient
                                 _panel.Children.Add(_rectangle);
                                 Canvas.SetLeft(_rectangle, dropPoint.X);
                                 Canvas.SetTop(_rectangle, dropPoint.Y);
-                                this.updateCanvasItems();
                             }
                             else if (_element is UsingConnector)
                             {
@@ -387,7 +411,6 @@ namespace ChattingClient
                                 _panel.Children.Add(_updatedUc);
                                 Canvas.SetLeft(_updatedUc, dropPoint.X);
                                 Canvas.SetTop(_updatedUc, dropPoint.Y);
-                                this.updateCanvasItems();
                             }
                             else if (_element is ConnectorLeft)
                             {
@@ -398,7 +421,16 @@ namespace ChattingClient
                                 _panel.Children.Add(_updatedUc);
                                 Canvas.SetLeft(_updatedUc, dropPoint.X);
                                 Canvas.SetTop(_updatedUc, dropPoint.Y);
-                                this.updateCanvasItems();
+                            }
+                            else if (_element is ConnectorUp)
+                            {
+                                _parent.Children.Remove(_element);
+                                ConnectorUp _updatedUc = new ConnectorUp((ConnectorUp)_element);
+                                _updatedUc.left = dropPoint.X;
+                                _updatedUc.top = dropPoint.Y;
+                                _panel.Children.Add(_updatedUc);
+                                Canvas.SetLeft(_updatedUc, dropPoint.X);
+                                Canvas.SetTop(_updatedUc, dropPoint.Y);
                             }
                             else
                             {
@@ -409,8 +441,8 @@ namespace ChattingClient
                                 _panel.Children.Add(_updatedUc);
                                 Canvas.SetLeft(_updatedUc, dropPoint.X);
                                 Canvas.SetTop(_updatedUc, dropPoint.Y);
-                                this.updateCanvasItems();
                             }
+                            this.updateCanvasItems();
                             e.Effects = DragDropEffects.Move;
                         }
                     }
@@ -427,9 +459,12 @@ namespace ChattingClient
                 ShapeType shapetype;
                 double top = 0;
                 double left = 0;
+                string classNm = "";
                 if (elem is Rectangle)
                 {
                     shapetype = ShapeType.Rectangle;
+                    Rectangle rec = (Rectangle)elem;
+                    classNm = rec.className.Text;
                 }
                 else if (elem is UsingConnector)
                 {
@@ -438,6 +473,10 @@ namespace ChattingClient
                 else if (elem is ConnectorLeft)
                 {
                     shapetype = ShapeType.ConnectorLeft;
+                }
+                else if (elem is ConnectorUp)
+                {
+                    shapetype = ShapeType.ConnectorUp;
                 }
                 else
                 {
@@ -451,7 +490,8 @@ namespace ChattingClient
                     if (p.Name.Equals("top")) top = (double)p.GetValue(elem);
                     if (p.Name.Equals("left")) left = (double)p.GetValue(elem);
                 }
-                UMLShape newShape = new UMLShape(shapetype, top, left);
+                UMLShape newShape = new UMLShape(shapetype, classNm, top, left);
+
                 this.cvContainer.ShapeList.Add(newShape);
             }
         }
@@ -545,11 +585,21 @@ namespace ChattingClient
                 if (ushape.ShpType == ShapeType.Rectangle)
                 {
                     Rectangle rect = new Rectangle();
+                    rect.className.Text = ushape.ClassName;
                     rect.left = ushape.Left;
                     rect.top = ushape.Top;
                     this.dropPanel.Children.Add(rect);
                     Canvas.SetLeft(rect, ushape.Left);
                     Canvas.SetTop(rect, ushape.Top);
+                }
+                if (ushape.ShpType == ShapeType.ConnectorUp)
+                {
+                    ConnectorUp uc = new ConnectorUp();
+                    uc.left = ushape.Left;
+                    uc.top = ushape.Top;
+                    this.dropPanel.Children.Add(uc);
+                    Canvas.SetLeft(uc, ushape.Left);
+                    Canvas.SetTop(uc, ushape.Top);
                 }
                 if (ushape.ShpType == ShapeType.ConnectorDown)
                 {
@@ -575,8 +625,6 @@ namespace ChattingClient
             if (openFileDialog3.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 filePath = openFileDialog3.FileName;
-                //Read the contents of the file into a stream
-                //var fileStream = openFileDialog3.OpenFile();
                 DeserializeXML(filePath);
                 SendUML();
             }

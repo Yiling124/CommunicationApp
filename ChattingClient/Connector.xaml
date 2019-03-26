@@ -5,24 +5,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DragAndDrop"
              mc:Ignorable="d" 
-             d:DesignHeight="43" d:DesignWidth="81"
+             d:DesignHeight="30" d:DesignWidth="80"
              AllowDrop="True">
-    <Canvas Name="classCanvas"  Height="41" Width="79" Panel.ZIndex="-1">
+    <Canvas Name="classCanvas"  Height="30" Width="80" Panel.ZIndex="-1">
         <Line
-     X1="0" Y1="20"
-     X2="80" Y2="20"
+     X1="0" Y1="10"
+     X2="80" Y2="10"
      Stroke="Black"
      StrokeThickness="2"/>
 
         <Line
     X1="60" Y1="0"
-    X2="80" Y2="20"
+    X2="80" Y2="10"
     Stroke="Black"
     StrokeThickness="2" />
 
         <Line
-    X1="60" Y1="40"
-    X2="80" Y2="20"
+    X1="60" Y1="20"
+    X2="80" Y2="10"
     Stroke="Black"
     StrokeThickness="2" Width="79" />
 

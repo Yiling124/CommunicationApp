@@ -68,15 +68,43 @@
     <Compile Include="Connector.xaml.cs">
       <DependentUpon>Connector.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectorDiaDown.xaml.cs">
+      <DependentUpon>ConnectorDiaDown.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorDiaLeft.xaml.cs">
+      <DependentUpon>ConnectorDiaLeft.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorDiaRight.xaml.cs">
+      <DependentUpon>ConnectorDiaRight.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorDiaUp.xaml.cs">
+      <DependentUpon>ConnectorDiaUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ConnectorDown.xaml.cs">
       <DependentUpon>ConnectorDown.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConnectorLeft.xaml.cs">
       <DependentUpon>ConnectorLeft.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectorTriDown.xaml.cs">
+      <DependentUpon>ConnectorTriDown.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorTriLeft.xaml.cs">
+      <DependentUpon>ConnectorTriLeft.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorTriRight.xaml.cs">
+      <DependentUpon>ConnectorTriRight.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorTriUp.xaml.cs">
+      <DependentUpon>ConnectorTriUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConnectorUp.xaml.cs">
+      <DependentUpon>ConnectorUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DisplayableFileMsg.cs" />
     <Compile Include="DisplayableTextmsg.cs" />
     <Compile Include="DisplayableUMLmsg.cs" />
+    <Compile Include="MyShape.cs" />
     <Compile Include="Rectangle.xaml.cs">
       <DependentUpon>Rectangle.xaml</DependentUpon>
     </Compile>
@@ -85,11 +113,47 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ConnectorDiaDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorDiaLeft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorDiaRight.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorDiaUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ConnectorDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConnectorLeft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorTriDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorTriLeft.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorTriRight.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorTriUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectorUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
