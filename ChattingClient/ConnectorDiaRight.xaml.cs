@@ -20,9 +20,34 @@ namespace DragAndDrop
     /// </summary>
     public partial class ConnectorDiaRight : UserControl
     {
+        public double left { get; set; }
+        public double top { get; set; }
+
         public ConnectorDiaRight()
         {
             InitializeComponent();
+        }
+        public ConnectorDiaRight(ConnectorDiaRight u)
+        {
+            InitializeComponent();
+            this.classCanvas.Height = u.classCanvas.Height;
+            this.classCanvas.Width = u.classCanvas.Width;
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            //MessageBox.Show("Triggered");
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                // Package the data.
+                DataObject data = new DataObject();
+                //data.SetData(DataFormats.StringFormat, classCanvas.Width.ToString());
+                //data.SetData("Double", classCanvas.Height);
+                data.SetData("Object", this);
+
+                // Inititate the drag-and-drop operation.
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
         }
     }
 }

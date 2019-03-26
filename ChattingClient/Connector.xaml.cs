@@ -46,7 +46,5 @@ namespace DragAndDrop
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
             }
         }
-
-
     }
 }
