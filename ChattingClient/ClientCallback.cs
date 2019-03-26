@@ -21,7 +21,6 @@ namespace ChattingClient
 
         public void GetPeerList(string clientList)
         {
-            MessageBox.Show("getPeerList got called");
             ((MainWindow)Application.Current.MainWindow).DisplayOnlinePeerList(clientList);
         }
 

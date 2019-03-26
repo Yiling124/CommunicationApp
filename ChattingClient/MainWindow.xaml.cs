@@ -197,7 +197,7 @@ namespace ChattingClient
                 MessageBox.Show("Please double check recepient address !");
                 return;
             }
-
+            
             Tuple<string, int> ssOwnerAdrs = buildIpAdrs(this.sessionIp, sessionPort.ToString());
             IDeliverable msgOut = new DeliverableTextMessage(MsgType.Text, MessageTextBox.Text, this.userName, privatReceipientAdrs, ssOwnerAdrs);
             msgOutBlockingQ.enQ(msgOut);
@@ -227,7 +227,6 @@ namespace ChattingClient
         // Updated peerList will be displayed on UI with this function 
         public void DisplayOnlinePeerList(string userList)
         {
-            MessageBox.Show("frontEend DisplayPeerList got called");
             TextDisplayTextBox_OnlinePeers.Text = userList;
             TextDisplayTextBox_OnlinePeers.IsEnabled = false;
             // TextDisplayTextBox_OnlinePeers.ScrollToEnd();
@@ -252,7 +251,7 @@ namespace ChattingClient
 
         public bool isApproved(string userName)
         {
-            string messageBoxText = String.Format("{0} wants to joint, approve?", userName);
+            string messageBoxText = String.Format("{0} wants to join, approve?", userName);
             string caption = "Join Session Request";
             MessageBoxButton button = MessageBoxButton.YesNo;
             MessageBoxImage icon = MessageBoxImage.Warning;

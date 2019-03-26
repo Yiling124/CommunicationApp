@@ -17,7 +17,7 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Rectangle Width="280" Height="189" VerticalAlignment="Bottom" Margin="58,0,57,119.5" RadiusY="10" RadiusX="10" Fill="White" RenderTransformOrigin="0.506,0.49">
+        <Rectangle Height="201" VerticalAlignment="Bottom" Margin="35,0,35,119.5" RadiusY="10" RadiusX="10" Fill="White" RenderTransformOrigin="0.506,0.49">
             <Rectangle.Effect>
                 <DropShadowEffect BlurRadius="15" Direction="0" RenderingBias="Quality" ShadowDepth="1" Color="#FFBBBBBB"/>
             </Rectangle.Effect>
@@ -31,7 +31,7 @@
             </StackPanel>
         </Grid>
         <Button x:Name="JoinSessionButton"  Width="183" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="109,0,103,64.5" Content="JOIN" Height="36" Click="JoinSessionButton_Click"/>
-        <TextBlock Text="Welcome ! Come chat with your team !" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="101,0,89,30.5" Foreground="Gray" Cursor="Hand"/>
+        <TextBlock Text="Welcome! Come chat with your team!" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="101,0,89,30.5" Foreground="Gray" Cursor="Hand"/>
         <Button x:Name="CreateSessionButton" Width="235" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="80,0,80,354.5" Content="CREATE SESSION " Height="53" Click="CreateSessionButton_Click"/>
     </Grid>
 </Window>

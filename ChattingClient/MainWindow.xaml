@@ -27,7 +27,7 @@
             <TextBox Name ="MessageTextBox" AllowDrop="True" PreviewDragEnter="OnDragOver" PreviewDragOver="OnDragOver" PreviewDrop="OnFileDrop" HorizontalAlignment="Left" Height="58" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="406" Canvas.Left="14" Canvas.Top="677"/>
             <TextBox Name="TextDisplayTextBox" Height="402" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Canvas.Left="34" Canvas.Top="73" Width="203"/>
             <Label Name="WelcomeLabel" Content="Welcome   " HorizontalAlignment="Left" Margin="33,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
-            <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Right" Height="402" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="204" RenderTransformOrigin="0.5,0.5" Canvas.Left="336" Canvas.Top="73"/>
+            <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Right" Height="402" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="245" RenderTransformOrigin="0.5,0.5" Canvas.Left="317" Canvas.Top="73"/>
             <TextBox HorizontalAlignment="Left" Height="28" Margin="34,579,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
             </TextBox>
             <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="38,555,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
@@ -36,7 +36,6 @@
             </TextBox>
             <Label x:Name="SessionIpLabel" Content="Current Session IP: " HorizontalAlignment="Left" Margin="153,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
             <Label x:Name="SessionPortLabel" Content="Current Session PORT: " HorizontalAlignment="Left" Margin="350,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
-            <TextBox HorizontalAlignment="Left" Height="28" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverIpTextBox_Copy"  RenderTransformOrigin="0.5,0.5" Canvas.Left="34" Canvas.Top="579"/>
         </Canvas>
 
         <Canvas x:Name="ULMelem" Background="AliceBlue" Grid.Column="2" Margin="579,3,-753,-2.5" >
@@ -45,7 +44,7 @@
             <local1:ConnectorLeft Canvas.Left="48" Canvas.Top="177" />
             <local1:ConnectorDown Canvas.Left="43" Canvas.Top="209" />
             <local1:ConnectorUp  Canvas.Left="108" Canvas.Top="209" />
-            <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Canvas.Left="27" Canvas.Top="524"/>
+            <Button x:Name="LoadUMLButton" IsDefault="True" Content="Load UML" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" Height="42" Click="LoadUMLButton_Click" Canvas.Left="27" Canvas.Top="559"/>
             <Label Name="ClassNameLabel" Content="Please Enter Class Name" Canvas.Top="79" Canvas.Left="10"/>
             <TextBox HorizontalAlignment="Left" Height="28" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="162" x:Name ="ClassNameTextBox"  RenderTransformOrigin="0.5,0.5" Canvas.Left="7" Canvas.Top="103"/>
         </Canvas>
@@ -59,7 +58,7 @@
             DragOver="panel_DragOver"
             Drop="panel_Drop"
         />
-        <Button x:Name="SaveUMLButton" IsDefault="True" Content="Save UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SaveUMLButton_Click" Grid.Column="2" Margin="603,661,-723,0"/>
-        <Button x:Name="ClearUMLButton" IsDefault="True" Content="Clear UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="ClearUMLButton_Click" Grid.Column="2" Margin="604,594,-724,0"/>
+        <Button x:Name="SaveUMLButton" IsDefault="True" Content="Save UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="SaveUMLButton_Click" Grid.Column="2" Margin="603,686,-723,0"/>
+        <Button x:Name="ClearUMLButton" IsDefault="True" Content="Clear UML" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Height="42" Click="ClearUMLButton_Click" Grid.Column="2" Margin="604,623,-724,0"/>
     </Grid>
 </Window>
