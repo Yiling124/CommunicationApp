@@ -1,4 +1,12 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                             //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements the User Control for the UML Diagram 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +44,6 @@ namespace DragAndDrop
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            //MessageBox.Show("Triggered");
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 // Package the data.

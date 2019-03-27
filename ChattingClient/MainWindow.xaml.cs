@@ -70,6 +70,9 @@ namespace ChattingClient
             msgInThrd.Start();
         }
 
+
+        // This thread processes all the message inside of the incoming message blocking queue and then calls action delegate
+        // to display the messages
         public void MsgInThreadProc()
         {
             Action act = () => { };
@@ -104,6 +107,7 @@ namespace ChattingClient
             DisplayOnlinePeerList(peerList);
         }
 
+        // This message will prompt user to make decision wether they want to save the file they just received to their computer
         private bool toSaveFile()
         {
             string messageBoxText = this.userName + " You received a file, save it ? ";
@@ -123,6 +127,7 @@ namespace ChattingClient
             return false;
         }
 
+        // Diagram poping up letting user save File messages
         public void DisplayFileMsg(string msgContent)
         {
             if (toSaveFile() == true)
@@ -131,7 +136,6 @@ namespace ChattingClient
                 saveFileDialog1.Filter = "Text Files *.txt | *.txt | UML Files *.xml| *.xml";  
                 saveFileDialog1.DefaultExt = ".xml";
                 saveFileDialog1.Title = "Save an File";
-                //saveFileDialog1.ShowDialog();
 
                 if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -179,8 +183,6 @@ namespace ChattingClient
                 amsg = new DisplayableUMLmsg(msg, isPrivate, userName);
             }
             else {
-
-                // NEED TO BE CHANGED WHEN SEND PRIVATE FILE !
                 amsg = new DisplayableFileMsg(msg, false, userName);
             }
             msgInBlockingQ.enQ(amsg);
@@ -212,9 +214,7 @@ namespace ChattingClient
             StringWriter stringWriter = new StringWriter();
             xmlSerializer.Serialize(stringWriter, shapeList);
             return stringWriter.ToString();
-
         }
-
 
         private void SendUML()
         {
@@ -246,7 +246,7 @@ namespace ChattingClient
         {
             if (this.sessionIp.Length == 0 && this.sessionPort == 0) return;
             Tuple<string, int> sessionOwnerIpAddress = buildIpAdrs(this.sessionIp, this.sessionPort.ToString());
-            Server.Logout(sessionOwnerIpAddress);
+            Server.Logout(sessionOwnerIpAddress, this.userName);
         }
 
         public bool isApproved(string userName)
@@ -317,9 +317,9 @@ namespace ChattingClient
                     {
                         shapetype = ShapeType.ConnectorDiaUp;
                     }
-                    else if (_element is ConnectorDiaRight)
+                    else if (_element is ConnectorDiaLeft)
                     {
-                        shapetype = ShapeType.ConnectorDiaRight;
+                        shapetype = ShapeType.ConnectorDiaLeft;
                     }
                     else if (_element is ConnectorTriDown)
                     {
@@ -390,9 +390,9 @@ namespace ChattingClient
                                 Canvas.SetTop(_cl, dropPoint.Y);
                                 cvContainer.AddShape(newShape);
                             }
-                            else if (_element is ConnectorDiaRight)
+                            else if (_element is ConnectorDiaLeft)
                             {
-                                ConnectorDiaRight _cl = new ConnectorDiaRight((ConnectorDiaRight)_element);
+                                ConnectorDiaLeft _cl = new ConnectorDiaLeft((ConnectorDiaLeft)_element);
                                 _cl.left = dropPoint.X;
                                 _cl.top = dropPoint.Y;
                                 _panel.Children.Add(_cl);
@@ -515,10 +515,10 @@ namespace ChattingClient
                                 Canvas.SetLeft(_updatedUc, dropPoint.X);
                                 Canvas.SetTop(_updatedUc, dropPoint.Y);
                             }
-                            else if (_element is ConnectorDiaRight)
+                            else if (_element is ConnectorDiaLeft)
                             {
                                 _parent.Children.Remove(_element);
-                                ConnectorDiaRight _updatedUc = new ConnectorDiaRight((ConnectorDiaRight)_element);
+                                ConnectorDiaLeft _updatedUc = new ConnectorDiaLeft((ConnectorDiaLeft)_element);
                                 _updatedUc.left = dropPoint.X;
                                 _updatedUc.top = dropPoint.Y;
                                 _panel.Children.Add(_updatedUc);
@@ -634,9 +634,9 @@ namespace ChattingClient
                 {
                     shapetype = ShapeType.ConnectorTriDown;
                 }
-                else if (elem is ConnectorDiaRight)
+                else if (elem is ConnectorDiaLeft)
                 {
-                    shapetype = ShapeType.ConnectorDiaRight;
+                    shapetype = ShapeType.ConnectorDiaLeft;
                 }
                 else if (elem is ConnectorDiaDown)
                 {
@@ -790,9 +790,9 @@ namespace ChattingClient
                     Canvas.SetTop(uc, ushape.Top);
                 }
 
-                if (ushape.ShpType == ShapeType.ConnectorDiaRight)
+                if (ushape.ShpType == ShapeType.ConnectorDiaLeft)
                 {
-                    ConnectorDiaRight uc = new ConnectorDiaRight();
+                    ConnectorDiaLeft uc = new ConnectorDiaLeft();
                     uc.left = ushape.Left;
                     uc.top = ushape.Top;
                     this.dropPanel.Children.Add(uc);

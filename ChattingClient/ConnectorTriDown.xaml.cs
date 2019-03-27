@@ -1,4 +1,12 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////////////////////                                     //
+//  Language:     C#                                                       //
+//  Author:       YiLing Jiang                                             //
+/////////////////////////////////////////////////////////////////////////////
+/*
+ *   This package implements the User Control for the UML Diagram 
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,8 +50,6 @@ namespace DragAndDrop
             {
                 // Package the data.
                 DataObject data = new DataObject();
-                //data.SetData(DataFormats.StringFormat, classCanvas.Width.ToString());
-                //data.SetData("Double", classCanvas.Height);
                 data.SetData("Object", this);
 
                 // Inititate the drag-and-drop operation.

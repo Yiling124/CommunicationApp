@@ -26,7 +26,7 @@ namespace ChattingInterfaces
         Tuple<string, string, int> JoinSession(string userName, Tuple<string, int> ownerIpAddress);
 
         [OperationContract]
-        void Logout(Tuple<string, int> sessionOwnerIpAddress);
+        void Logout(Tuple<string, int> sessionOwnerIpAddress, string userName);
 
         [OperationContract]
         bool SendTextMessage(MsgType type, string message, string userName, Tuple<string, int> receiverIpAddress, Tuple<string, int> sessionOwnerIpAddress);

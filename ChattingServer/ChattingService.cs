@@ -182,32 +182,26 @@ namespace ChattingServer
 
         // peer will be deleted from the chat session when logging out, and the whole session will be deleted from the session Manager
         // when the last peer of a chat session left 
-        public void Logout(Tuple<string, int> sessionOwnerIpAddress)
+        public void Logout(Tuple<string, int> sessionOwnerIpAddress, string userName)
         {
             Console.WriteLine("One user logged out!");
             IClient currentConnectedConnection = OperationContext.Current.GetCallbackChannel<IClient>();
             Session sessionFound = sessionMg.getAllSessions()[sessionOwnerIpAddress];
             ConcurrentDictionary<Tuple<string, int>, ConnectedClient> sessionClientList = sessionFound.getClientList();
             string clientListForDisplay = "";
-
            
             foreach (var client in sessionClientList)
             {
-                Console.WriteLine("check: " + (client.Value.connection.Equals(currentConnectedConnection)).ToString());
-                if (client.Value.connection == currentConnectedConnection && sessionClientList.Count == 1)
+                if (client.Value.UserName.Equals(userName) && sessionClientList.Count == 1)
                 {
                     Session ssRemoved;
                     sessionMg.getAllSessions().TryRemove(sessionOwnerIpAddress, out ssRemoved);
                     return;
-                } else if (client.Value.connection.Equals(currentConnectedConnection)) {
-                    Console.WriteLine("1");
+                } else if (client.Value.UserName.Equals(userName)) {
                     ConnectedClient removedClient;
-                    Console.WriteLine("2");
                     sessionClientList.TryRemove(client.Value.IpAddress, out removedClient);
-                    Console.WriteLine("client got removed");
                     clientListForDisplay = BuildSessionStrClientList(sessionClientList);
 
-                    Console.WriteLine("ready to send list" + clientListForDisplay);
                     SendUpdatedClientList(clientListForDisplay, sessionClientList, null);
                     return;
                 }

@@ -30,8 +30,8 @@
             <TextBox Name="TextDisplayTextBox_OnlinePeers" HorizontalAlignment="Right" Height="402" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="236" RenderTransformOrigin="0.5,0.5" Canvas.Left="317" Canvas.Top="73"/>
             <TextBox HorizontalAlignment="Left" Height="28" Margin="34,579,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverIpTextBox"  RenderTransformOrigin="0.5,0.5">
             </TextBox>
-            <Label Name="ReceiverIpLabel" Content="Receiver IP" HorizontalAlignment="Left" Margin="38,555,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
-            <Label Name="ReceiverPortLabel" Content="Receiver Port" HorizontalAlignment="Left" Margin="37,615,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
+            <Label Name="ReceiverIpLabel" Content="Private Msg IP" HorizontalAlignment="Left" Margin="38,555,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
+            <Label Name="ReceiverPortLabel" Content="Private Msg Port" HorizontalAlignment="Left" Margin="37,615,0,0" VerticalAlignment="Top" Width="179" Height="26"/>
             <TextBox HorizontalAlignment="Left" Height="33" Margin="35,634,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="203" x:Name ="receiverPortTextBox"  RenderTransformOrigin="0.5,0.5">
             </TextBox>
             <Label x:Name="SessionIpLabel" Content="Current Session IP: " HorizontalAlignment="Left" Margin="153,27,0,0" VerticalAlignment="Top" Width="179" Height="25"/>
@@ -45,7 +45,7 @@
             <local1:ConnectorDown Canvas.Left="29" Canvas.Top="316" />
             <local1:ConnectorUp  Canvas.Left="124" Canvas.Top="432" />
             <local1:ConnectorDiaDown  Canvas.Left="31" Canvas.Top="426" />
-            <local1:ConnectorDiaRight  Canvas.Left="45" Canvas.Top="219" />
+            <local1:ConnectorDiaLeft  Canvas.Left="45" Canvas.Top="219" />
             <local1:ConnectorDiaUp  Canvas.Left="75" Canvas.Top="304" />
 
             <local1:ConnectorTriLeft  Canvas.Left="46" Canvas.Top="181" />
